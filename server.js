@@ -98,21 +98,25 @@ app.get("/planning", async (req, res) => {
 app.get("/debug-classement", async (req, res) => {
   try {
 
-    const response =
-      await axios.get(`${BASE_URL}/`);
+    const response = await axios.get(
+      `${BASE_URL}/classements/`
+    );
 
-    const html =
-      decodeHtml(response.data);
-
-    const pos =
-      html.indexOf("classement");
+    const html = decodeHtml(
+      response.data
+    );
 
     res.type("text/plain");
 
+    const pos =
+      html.indexOf(
+        "classement"
+      );
+
     res.send(
       html.substring(
-        pos - 1000,
-        pos + 5000
+        Math.max(0, pos - 2000),
+        pos + 20000
       )
     );
 
