@@ -6,30 +6,83 @@ const app = express();
 
 app.use(cors());
 
-const URL_FFHB =
-  "https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/u13f-44-32272/poule-190214/";
+const BASE_URL =
+  "https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/u13f-44-32272/poule-190214";
 
 app.get("/planning", async (req, res) => {
   try {
 
-    const response = await axios.get(URL_FFHB);
+    // J1 (page principale)
+    const response =
+      await axios.get(`${BASE_URL}/`);
 
-    const html = response.data;
-
-    const decodedHtml = html
-      .replaceAll("&quot;", '"')
-      .replaceAll("&#039;", "'")
-      .replaceAll("&amp;", "&");
+    const html =
+      decodeHtml(response.data);
 
     const journees =
-      extractJournees(decodedHtml);
+      extractJournees(html);
 
-    const rencontres =
-      extractRencontres(decodedHtml);
+    let toutesLesRencontres = [];
+
+    for (const j of journees) {
+
+      const url =
+        j.numero === 1
+          ? `${BASE_URL}/`
+          : `${BASE_URL}/journee-${j.numero}/`;
+
+      console.log(
+        `Chargement ${url}`
+      );
+
+      try {
+
+        const page =
+          await axios.get(url);
+
+        const htmlJournee =
+          decodeHtml(page.data);
+
+        const rencontres =
+          extractRencontres(
+            htmlJournee
+          );
+
+        console.log(
+          `J${j.numero} : ${rencontres.length} rencontre(s)`
+        );
+
+        toutesLesRencontres.push(
+          ...rencontres
+        );
+
+      } catch (err) {
+
+        console.error(
+          `Erreur J${j.numero}`,
+          err.message
+        );
+
+      }
+    }
+
+    // Suppression des doublons
+    const map = new Map();
+
+    toutesLesRencontres.forEach(r => {
+      map.set(
+        r.fdmCode,
+        r
+      );
+    });
+
+    const rencontresUniques =
+      [...map.values()];
 
     res.json({
       journees,
-      rencontres
+      rencontres:
+        rencontresUniques
     });
 
   } catch (error) {
@@ -43,6 +96,14 @@ app.get("/planning", async (req, res) => {
   }
 });
 
+function decodeHtml(html) {
+
+  return html
+    .replaceAll("&quot;", '"')
+    .replaceAll("&amp;", "&")
+    .replaceAll("&#039;", "'");
+}
+
 function extractJournees(html) {
   try {
 
@@ -54,25 +115,27 @@ function extractJournees(html) {
       return [];
     }
 
-    let journeesJson = match[1];
+    let journeesJson =
+      match[1];
 
-    console.log("CAPTURE BRUTE");
-    console.log(journeesJson.substring(0, 300));
-
-    journeesJson = journeesJson
-      .replace(/\\\\/g, "\\")
-      .replace(/\\"/g, '"');
-
-    console.log("APRES NETTOYAGE");
-    console.log(journeesJson.substring(0, 300));
+    journeesJson =
+      journeesJson
+        .replace(/\\\\/g, "\\")
+        .replace(/\\"/g, '"');
 
     const journees =
-      JSON.parse(journeesJson);
+      JSON.parse(
+        journeesJson
+      );
 
     return journees.map(j => ({
-      numero: Number(j.journee_numero),
-      debut: j.date_debut,
-      fin: j.date_fin
+      numero: Number(
+        j.journee_numero
+      ),
+      debut:
+        j.date_debut,
+      fin:
+        j.date_fin
     }));
 
   } catch (err) {
@@ -98,7 +161,9 @@ function extractRencontres(html) {
     }
 
     const rencontres =
-      JSON.parse(match[1]);
+      JSON.parse(
+        match[1]
+      );
 
     return rencontres.map(r => ({
       journee: Number(
