@@ -47,26 +47,30 @@ function extractJournees(html) {
   try {
 
     const match = html.match(
-      /"selected_poule":\{[\s\S]*?"journees":"([^"]+)"/
+      /"journees":"(\[[\s\S]*?\])"/
     );
 
     if (!match) {
+      console.log(
+        "Journees non trouvées"
+      );
       return [];
     }
 
-    const journeesString =
+    const journeesJson =
       match[1]
         .replace(/\\"/g, '"');
 
     const journees =
-      JSON.parse(journeesString);
+      JSON.parse(journeesJson);
 
     return journees.map(j => ({
-      numero: Number(
-        j.journee_numero
-      ),
-      debut: j.date_debut,
-      fin: j.date_fin
+      numero:
+        Number(j.journee_numero),
+      debut:
+        j.date_debut,
+      fin:
+        j.date_fin
     }));
 
   } catch (err) {
@@ -79,6 +83,7 @@ function extractJournees(html) {
     return [];
   }
 }
+``
 
 function extractRencontres(html) {
   try {
