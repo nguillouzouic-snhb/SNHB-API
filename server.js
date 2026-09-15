@@ -51,26 +51,28 @@ function extractJournees(html) {
     );
 
     if (!match) {
-      console.log(
-        "Journees non trouvées"
-      );
       return [];
     }
 
-    const journeesJson =
-      match[1]
-        .replace(/\\"/g, '"');
+    let journeesJson = match[1];
+
+    console.log("CAPTURE BRUTE");
+    console.log(journeesJson.substring(0, 300));
+
+    journeesJson = journeesJson
+      .replace(/\\\\/g, "\\")
+      .replace(/\\"/g, '"');
+
+    console.log("APRES NETTOYAGE");
+    console.log(journeesJson.substring(0, 300));
 
     const journees =
       JSON.parse(journeesJson);
 
     return journees.map(j => ({
-      numero:
-        Number(j.journee_numero),
-      debut:
-        j.date_debut,
-      fin:
-        j.date_fin
+      numero: Number(j.journee_numero),
+      debut: j.date_debut,
+      fin: j.date_fin
     }));
 
   } catch (err) {
@@ -83,7 +85,6 @@ function extractJournees(html) {
     return [];
   }
 }
-``
 
 function extractRencontres(html) {
   try {
