@@ -15,13 +15,11 @@ app.get("/planning", async (req, res) => {
 
     const html = response.data;
 
-    const journees = extractJournees(html);
-    const rencontres = extractRencontres(html);
+    console.log(
+      html.substring(0, 5000)
+    );
 
-    res.json({
-      journees,
-      rencontres
-    });
+    res.send(html);
 
   } catch (error) {
     console.error(error);
