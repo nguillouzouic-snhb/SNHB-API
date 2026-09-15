@@ -95,7 +95,35 @@ app.get("/planning", async (req, res) => {
 
   }
 });
+app.get("/debug-classement", async (req, res) => {
+  try {
 
+    const response =
+      await axios.get(`${BASE_URL}/`);
+
+    const html =
+      decodeHtml(response.data);
+
+    const pos =
+      html.indexOf("classement");
+
+    res.type("text/plain");
+
+    res.send(
+      html.substring(
+        pos - 1000,
+        pos + 5000
+      )
+    );
+
+  } catch (error) {
+
+    res.status(500).json({
+      error: error.message
+    });
+
+  }
+});
 function decodeHtml(html) {
 
   return html
