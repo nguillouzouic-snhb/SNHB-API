@@ -11,17 +11,23 @@ const URL_FFHB =
 
 app.get("/planning", async (req, res) => {
   try {
+
     const response = await axios.get(URL_FFHB);
 
     const html = response.data;
 
-	res.type("text/plain");
-	res.send(html.substring(0, 10000));
+    res.json({
+      type: typeof html,
+      longueur: html?.length,
+      debut: html?.substring(0, 200)
+    });
 
   } catch (error) {
+
     res.status(500).json({
       error: error.message
     });
+
   }
 });
 
