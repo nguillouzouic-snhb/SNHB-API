@@ -17,9 +17,12 @@ app.get("/planning", async (req, res) => {
     const html = response.data;
 
     res.json({
-      type: typeof html,
-      longueur: html?.length,
-      debut: html?.substring(0, 200)
+      selectedPoule: html.includes("selected_poule"),
+      rencontres: html.includes("rencontres"),
+      nextData: html.includes("__NEXT_DATA__"),
+      nextDataLower: html.includes("__next"),
+      journees: html.includes("journees"),
+      equipe: html.includes("ST NAZAIRE")
     });
 
   } catch (error) {
