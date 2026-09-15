@@ -11,28 +11,35 @@ const URL_FFHB =
 
 app.get("/planning", async (req, res) => {
   try {
+
     const response = await axios.get(URL_FFHB);
 
     const html = response.data;
 
-    const pos1 = html.indexOf("selected_poule");
-    const pos2 = html.indexOf("rencontres");
+    const decodedHtml = html
+      .replaceAll("&quot;", '"')
+      .replaceAll("&#039;", "'")
+      .replaceAll("&amp;", "&");
+
+    const journees =
+      extractJournees(decodedHtml);
+
+    const rencontres =
+      extractRencontres(decodedHtml);
 
     res.json({
-      selectedPoule: html.substring(
-        Math.max(0, pos1 - 300),
-        pos1 + 2000
-      ),
-      rencontres: html.substring(
-        Math.max(0, pos2 - 300),
-        pos2 + 2000
-      )
+      journees,
+      rencontres
     });
 
   } catch (error) {
+
+    console.error(error);
+
     res.status(500).json({
       error: error.message
     });
+
   }
 });
 
