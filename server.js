@@ -15,7 +15,8 @@ app.get("/planning", async (req, res) => {
 
     const html = response.data;
 
-    res.send(html.substring(0, 10000));
+	res.type("text/plain");
+	res.send(html.substring(0, 10000));
 
   } catch (error) {
     res.status(500).json({
