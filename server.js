@@ -11,26 +11,28 @@ const URL_FFHB =
 
 app.get("/planning", async (req, res) => {
   try {
-
     const response = await axios.get(URL_FFHB);
 
     const html = response.data;
 
+    const pos1 = html.indexOf("selected_poule");
+    const pos2 = html.indexOf("rencontres");
+
     res.json({
-      selectedPoule: html.includes("selected_poule"),
-      rencontres: html.includes("rencontres"),
-      nextData: html.includes("__NEXT_DATA__"),
-      nextDataLower: html.includes("__next"),
-      journees: html.includes("journees"),
-      equipe: html.includes("ST NAZAIRE")
+      selectedPoule: html.substring(
+        Math.max(0, pos1 - 300),
+        pos1 + 2000
+      ),
+      rencontres: html.substring(
+        Math.max(0, pos2 - 300),
+        pos2 + 2000
+      )
     });
 
   } catch (error) {
-
     res.status(500).json({
       error: error.message
     });
-
   }
 });
 
