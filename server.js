@@ -102,23 +102,18 @@ app.get("/debug-classement", async (req, res) => {
       `${BASE_URL}/classements/`
     );
 
-    const html = decodeHtml(
-      response.data
-    );
+    const html = decodeHtml(response.data);
 
-    res.type("text/plain");
-
-    const pos =
-      html.indexOf(
-        "classement"
-      );
-
-    res.send(
-      html.substring(
-        Math.max(0, pos - 2000),
-        pos + 20000
-      )
-    );
+    res.json({
+      classement: html.includes("classement"),
+      classementData: html.includes("classements"),
+      ranking: html.includes("ranking"),
+      equipe: html.includes("ST NAZAIRE HANDBALL"),
+      points: html.includes("points"),
+      rang: html.includes("rang"),
+      table: html.includes("<table"),
+      smartfire: html.includes("smartfire-component")
+    });
 
   } catch (error) {
 
@@ -230,3 +225,14 @@ app.listen(PORT, () => {
     `API SNHB démarrée sur le port ${PORT}`
   );
 });
+const pos =
+  html.indexOf("ST NAZAIRE HANDBALL");
+
+res.type("text/plain");
+
+res.send(
+  html.substring(
+    pos - 2000,
+    pos + 10000
+  )
+);
