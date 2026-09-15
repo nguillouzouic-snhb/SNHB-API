@@ -1,44 +1,118 @@
 import express from "express";
 import axios from "axios";
 import cors from "cors";
-import https from "https";
 
 const app = express();
 
 app.use(cors());
-
-const httpsAgent = new https.Agent({
-  rejectUnauthorized: false,
-});
 
 const URL_FFHB =
   "https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/u13f-44-32272/poule-190214/";
 
 app.get("/planning", async (req, res) => {
   try {
-    const response = await axios.get(
-      URL_FFHB,
-      {
-        httpsAgent,
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140.0 Safari/537.36",
-        },
-      }
-    );
+    const response = await axios.get(URL_FFHB);
 
-    res.send(response.data);
+    const html = response.data;
+
+    const journees = extractJournees(html);
+    const rencontres = extractRencontres(html);
+
+    res.json({
+      journees,
+      rencontres
+    });
+
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
-      error: error.message,
+      error: error.message
     });
   }
 });
 
-app.listen(3000, () => {
+function extractJournees(html) {
+  try {
+
+    const match = html.match(
+      /"selected_poule":\{[\s\S]*?"journees":"([^"]+)"/
+    );
+
+    if (!match) {
+      return [];
+    }
+
+    const journeesString =
+      match[1]
+        .replace(/\\"/g, '"');
+
+    const journees =
+      JSON.parse(journeesString);
+
+    return journees.map(j => ({
+      numero: Number(
+        j.journee_numero
+      ),
+      debut: j.date_debut,
+      fin: j.date_fin
+    }));
+
+  } catch (err) {
+
+    console.error(
+      "Erreur extraction journées",
+      err
+    );
+
+    return [];
+  }
+}
+
+function extractRencontres(html) {
+  try {
+
+    const match = html.match(
+      /"rencontres":(\[[\s\S]*?\])\}/
+    );
+
+    if (!match) {
+      return [];
+    }
+
+    const rencontres =
+      JSON.parse(match[1]);
+
+    return rencontres.map(r => ({
+      journee: Number(
+        r.journeeNumero
+      ),
+      domicile:
+        r.equipe1Libelle,
+      exterieur:
+        r.equipe2Libelle,
+      date:
+        r.date,
+      fdmCode:
+        r.fdmCode
+    }));
+
+  } catch (err) {
+
+    console.error(
+      "Erreur extraction rencontres",
+      err
+    );
+
+    return [];
+  }
+}
+
+const PORT =
+  process.env.PORT || 3000;
+
+app.listen(PORT, () => {
   console.log(
-    "API SNHB démarrée sur le port 3000"
+    `API SNHB démarrée sur le port ${PORT}`
   );
 });
