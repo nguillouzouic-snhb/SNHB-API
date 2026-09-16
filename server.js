@@ -1,3 +1,4 @@
+let debugAffiche = false;
 import express from "express";
 import axios from "axios";
 import cors from "cors";
@@ -268,25 +269,30 @@ function extractRencontres(html) {
       JSON.parse(match[1]);
 
     // DEBUG FFHB
-    if (rencontres.length > 0) {
+    if (
+  !debugAffiche &&
+  rencontres.length > 0
+) {
 
-      console.log(
-        "FFHB BRUT ==================="
-      );
+  debugAffiche = true;
 
-      console.log(
-       JSON.stringify(
-          rencontres[0],
-          null,
-          2
-        )
-     );
+  console.log(
+    "FFHB BRUT ==================="
+  );
 
-      //console.log(
-      //  "============================="
-     // );
+  console.log(
+    JSON.stringify(
+      rencontres[0],
+      null,
+      2
+    )
+  );
 
-    }
+  console.log(
+    "============================="
+  );
+
+}
 
     return rencontres.map(r => ({
       journee: Number(
