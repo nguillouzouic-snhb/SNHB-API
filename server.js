@@ -56,12 +56,33 @@ app.get("/planning/:equipe", async (req, res) => {
           await axios.get(url);
 
         const htmlJournee =
-          decodeHtml(page.data);
+  decodeHtml(page.data);
 
-        const rencontres =
-          extractRencontres(
-            htmlJournee
-          );
+if (j.numero === 1) {
+
+  console.log(
+    "CONTIENT RENCONTRES ?",
+    htmlJournee.includes(
+      '"rencontres":'
+    )
+  );
+
+  const index =
+    htmlJournee.indexOf(
+      "ST NAZAIRE"
+    );
+
+  console.log(
+    "INDEX ST NAZAIRE =",
+    index
+  );
+
+}
+
+const rencontres =
+  extractRencontres(
+    htmlJournee
+  );
 
         toutesLesRencontres.push(
           ...rencontres
