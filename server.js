@@ -9,10 +9,20 @@ app.use(cors());
 const BASE_URL =
   "https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/u13f-44-32272/poule-190214";
 
-app.get("/planning", async (req, res) => {
-  try {
+app.get("/planning/:equipe", async (req, res) => {
 
-    // J1 (page principale)
+  const collectif =
+    COLLECTIFS[req.params.equipe];
+
+  if (!collectif) {
+    return res.status(404).json({
+      erreur: "Collectif inconnu"
+    });
+  }
+
+  const BASE_URL =
+    buildBaseUrl(collectif);
+
     const response =
       await axios.get(`${BASE_URL}/`);
 
@@ -95,32 +105,36 @@ app.get("/planning", async (req, res) => {
 
   }
 });
-app.get("/classement", async (req, res) => {
+app.get("/classement/:equipe", async (req, res) => {
 
-  try {
+  const collectif =
+    COLLECTIFS[req.params.equipe];
 
-    const response =
-      await axios.get(
-        `${BASE_URL}/classements/`
-      );
-
-    const html =
-      decodeHtml(response.data);
-
-    const classement =
-      extractClassement(html);
-
-    res.json(classement);
-
-  } catch (error) {
-
-    res.status(500).json({
-      error: error.message
+  if (!collectif) {
+    return res.status(404).json({
+      erreur: "Collectif inconnu"
     });
-
   }
 
+  const BASE_URL =
+    buildBaseUrl(collectif);
+
+  const response =
+    await axios.get(
+      `${BASE_URL}/classements/`
+    );
+
+  const html =
+    decodeHtml(response.data);
+
+  res.json(
+    extractClassement(html)
+  );
+
 });
+function buildBaseUrl(collectif) {
+  return `https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/${collectif.competition}/poule-${collectif.poule}`;
+}
 function extractClassement(html) {
   try {
 
@@ -253,3 +267,17 @@ app.listen(PORT, () => {
     `API SNHB démarrée sur le port ${PORT}`
   );
 });
+
+const COLLECTIFS = {
+  U13F2: {
+    competition: "u13f-44-32272",
+    poule: "190214",
+	club: "ST NAZAIRE HANDBALL 2"
+  },
+
+  U13F1: {
+    competition: "u13f-44-32272",
+    poule: "190212",
+	club: "ST NAZAIRE HANDBALL 1"
+  }
+};
