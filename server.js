@@ -67,7 +67,7 @@ if (j.numero === 1) {
 
   console.log(
     match?.[1]?.substring(
-    * 0,
+     0,
       2000
     )
   );
