@@ -107,35 +107,7 @@ app.get("/planning/:equipe", async (req, res) => {
   }
 
 });
-    // Suppression des doublons
-    const map = new Map();
-
-    toutesLesRencontres.forEach(r => {
-      map.set(
-        r.fdmCode,
-        r
-      );
-    });
-
-    const rencontresUniques =
-      [...map.values()];
-
-    res.json({
-      journees,
-      rencontres:
-        rencontresUniques
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-    res.status(500).json({
-      error: error.message
-    });
-
-  }
-});
+    
 app.get("/classement/:equipe", async (req, res) => {
 
   try {
