@@ -61,43 +61,11 @@ const url =
 if (j.numero === 1) {
 
   console.log(
-    "INDEX journee-1 URL"
-  );
-
-  console.log(url);
-
-  const index =
-    htmlJournee.indexOf(
-      '"journeeNumero":"2"'
-    );
-
-  console.log(
-    "INDEX JOURNEE 2 =",
-    index
+    "URL J1 =",
+    url
   );
 
 }
-if (j.numero === 1) {
-
-  const match =
-    htmlJournee.match(
-      /"rencontres":(\[[\s\S]*?\])\}/
-    );
-
-  if (match) {
-
-    const rencontres =
-      JSON.parse(match[1]);
-
-    console.log(
-      "PREMIERE JOURNEE TROUVEE =",
-      rencontres[0]?.journeeNumero
-    );
-
-  }
-
-}
-
 
 const rencontres =
   extractRencontres(
