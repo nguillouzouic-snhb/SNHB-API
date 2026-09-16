@@ -48,9 +48,7 @@ console.log(
           ? `${BASE_URL}/`
           : `${BASE_URL}/journee-${j.numero}/`;
 
-      console.log(
-        `Chargement ${url}`
-      );
+      
 
       try {
 
@@ -65,9 +63,9 @@ console.log(
             htmlJournee
           );
 
-        console.log(
-          `J${j.numero} : ${rencontres.length} rencontre(s)`
-        );
+        //console.log(
+        //  `J${j.numero} : ${rencontres.length} rencontre(s)`
+        //);
 
         toutesLesRencontres.push(
           ...rencontres
@@ -256,20 +254,20 @@ function extractRencontres(html) {
     // DEBUG FFHB
     if (rencontres.length > 0) {
 
-      console.log(
-        "FFHB BRUT ==================="
+      //console.log(
+      //  "FFHB BRUT ==================="
+     // );
+
+      //console.log(
+       // JSON.stringify(
+      //    rencontres[0],
+      //    null,
+      //    2
+      //  )
       );
 
-      console.log(
-        JSON.stringify(
-          rencontres[0],
-          null,
-          2
-        )
-      );
-
-      console.log(
-        "============================="
+      //console.log(
+      //  "============================="
       );
 
     }
