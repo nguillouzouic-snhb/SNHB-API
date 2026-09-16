@@ -95,34 +95,22 @@ app.get("/planning", async (req, res) => {
 
   }
 });
-app.get("/debug-classement", async (req, res) => {
+app.get("/classement", async (req, res) => {
+
   try {
 
-    const response = await axios.get(
-      `${BASE_URL}/classements/`
-    );
-
-    const html = decodeHtml(response.data);
-
-    const premiere =
-      html.indexOf(
-        "ST NAZAIRE HANDBALL 2"
+    const response =
+      await axios.get(
+        `${BASE_URL}/classements/`
       );
 
-    const seconde =
-      html.indexOf(
-        "ST NAZAIRE HANDBALL 2",
-        premiere + 1
-      );
+    const html =
+      decodeHtml(response.data);
 
-    res.type("text/plain");
+    const classement =
+      extractClassement(html);
 
-    res.send(
-      html.substring(
-        Math.max(0, seconde - 3000),
-        seconde + 5000
-      )
-    );
+    res.json(classement);
 
   } catch (error) {
 
@@ -131,9 +119,45 @@ app.get("/debug-classement", async (req, res) => {
     });
 
   }
-});
-``;
 
+});
+function extractClassement(html) {
+  try {
+
+    const match = html.match(
+      /"classements":(\[[\s\S]*?\])/
+    );
+
+    if (!match) {
+      return [];
+    }
+
+    const classements =
+      JSON.parse(match[1]);
+
+    return classements.map(c => ({
+      rang: Number(c.place),
+      equipe: c.equipe_libelle,
+      points: Number(c.point),
+      joues: Number(c.joue),
+      gagnes: Number(c.gagne),
+      nuls: Number(c.nul),
+      perdus: Number(c.perdu),
+      butsPour: Number(c.butPlus),
+      butsContre: Number(c.butMoins),
+      difference: Number(c.diff)
+    }));
+
+  } catch (err) {
+
+    console.error(
+      "Erreur extraction classement",
+      err
+    );
+
+    return [];
+  }
+}
 function decodeHtml(html) {
 
   return html
