@@ -60,31 +60,45 @@ const url =
 
 if (j.numero === 1) {
 
-  const occurrences =
-    htmlJournee.match(
-      /"rencontres":/g
+  console.log(
+    "INDEX journee-1 URL"
+  );
+
+  console.log(url);
+
+  const index =
+    htmlJournee.indexOf(
+      '"journeeNumero":"2"'
     );
 
   console.log(
-    "NB OCCURRENCES RENCONTRES =",
-    occurrences?.length || 0
+    "INDEX JOURNEE 2 =",
+    index
   );
 
 }
 if (j.numero === 1) {
 
-  const index =
-    htmlJournee.indexOf(
-      '"journeeNumero":"1"'
+  const match =
+    htmlJournee.match(
+      /"rencontres":(\[[\s\S]*?\])\}/
     );
 
-  console.log(
-    "INDEX JOURNEE 1 =",
-    index
-  );
+  if (match) {
+
+    const rencontres =
+      JSON.parse(match[1]);
+
+    console.log(
+      "PREMIERE JOURNEE TROUVEE =",
+      rencontres[0]?.journeeNumero
+    );
+
+  }
 
 }
-``
+
+
 const rencontres =
   extractRencontres(
     htmlJournee
