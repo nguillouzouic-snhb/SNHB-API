@@ -64,34 +64,29 @@ console.log(
 
         const htmlJournee =
           decodeHtml(page.data);
-
+console.log(
+  `Analyse J${j.numero}`
+);
         const rencontres =
           extractRencontres(
             htmlJournee
           );
-
-        //console.log(
-        //  `J${j.numero} : ${rencontres.length} rencontre(s)`
-        //);
+console.log(
+  `J${j.numero} : ${rencontres.length} rencontre(s)`
+);
+        
 
         toutesLesRencontres.push(
           ...rencontres
         );
 
-      }catch (err) {
+      }console.error(
+  `Erreur J${j.numero}`
+);
 
-  console.error(
-    `Erreur J${j.numero}`
-  );
-
-  console.error(
-    err.response?.status
-  );
-
-  console.error(
-    err.message
-  );
-
+console.error(
+  err.message
+);
 }
     }
 
