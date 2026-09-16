@@ -60,20 +60,31 @@ const url =
 
 if (j.numero === 1) {
 
-  const match =
+  const occurrences =
     htmlJournee.match(
-      /"rencontres":(\[[\s\S]*?\])\}/
+      /"rencontres":/g
     );
 
   console.log(
-    match?.[1]?.substring(
-     0,
-      2000
-    )
+    "NB OCCURRENCES RENCONTRES =",
+    occurrences?.length || 0
   );
 
 }
+if (j.numero === 1) {
 
+  const index =
+    htmlJournee.indexOf(
+      '"journeeNumero":"1"'
+    );
+
+  console.log(
+    "INDEX JOURNEE 1 =",
+    index
+  );
+
+}
+``
 const rencontres =
   extractRencontres(
     htmlJournee
