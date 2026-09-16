@@ -31,14 +31,14 @@ try {
 
     const journees =
       extractJournees(html);
-console.log(
-  "JOURNEES EXTRAITES",
-  JSON.stringify(
-    journees,
-    null,
-    2
-  )
-);
+//console.log(
+ // "JOURNEES EXTRAITES",
+ // JSON.stringify(
+ //   journees,
+ //   null,
+ //   2
+ // )
+//);
     let toutesLesRencontres = [];
 
     for (const j of journees) {
@@ -71,14 +71,21 @@ console.log(
           ...rencontres
         );
 
-      } catch (err) {
+      }catch (err) {
 
-        console.error(
-          `Erreur J${j.numero}`,
-          err.message
-        );
+  console.error(
+    `Erreur J${j.numero}`
+  );
 
-      }
+  console.error(
+    err.response?.status
+  );
+
+  console.error(
+    err.message
+  );
+
+}
     }
 
     // Suppression des doublons
@@ -127,7 +134,10 @@ app.get("/classement/:equipe", async (req, res) => {
 
     const BASE_URL =
       buildBaseUrl(collectif);
-
+console.log(
+  `URL JOURNEE ${j.numero} :`,
+  url
+);
     const response =
       await axios.get(
         `${BASE_URL}/classements/`
