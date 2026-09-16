@@ -45,8 +45,10 @@ app.get("/planning/:equipe", async (req, res) => {
 
     for (const j of journees) {
 
-      const url =
-  `${BASE_URL}/journee-${j.numero}/`;
+const url =
+  j.numero === 1
+    ? `${baseUrl}/`
+    : `${baseUrl}/journee-${j.numero}/`;
 
       try {
 
