@@ -104,14 +104,25 @@ app.get("/debug-classement", async (req, res) => {
 
     const html = decodeHtml(response.data);
 
-    const occurrences =
-      [...html.matchAll(
-        /ST NAZAIRE HANDBALL 2/g
-      )];
+    const premiere =
+      html.indexOf(
+        "ST NAZAIRE HANDBALL 2"
+      );
 
-    res.json({
-      occurrences: occurrences.length
-    });
+    const seconde =
+      html.indexOf(
+        "ST NAZAIRE HANDBALL 2",
+        premiere + 1
+      );
+
+    res.type("text/plain");
+
+    res.send(
+      html.substring(
+        Math.max(0, seconde - 3000),
+        seconde + 5000
+      )
+    );
 
   } catch (error) {
 
@@ -121,6 +132,7 @@ app.get("/debug-classement", async (req, res) => {
 
   }
 });
+``;
 
 function decodeHtml(html) {
 
