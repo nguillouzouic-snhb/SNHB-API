@@ -65,13 +65,7 @@ try {
         toutesLesRencontres.push(
           ...rencontres
         );
-console.log(
-  JSON.stringify(
-    rencontres[0],
-    null,
-    2
-  )
-);
+
       } catch (err) {
 
         console.error(
@@ -250,9 +244,28 @@ function extractRencontres(html) {
     }
 
     const rencontres =
-      JSON.parse(
-        match[1]
+      JSON.parse(match[1]);
+
+    // DEBUG FFHB
+    if (rencontres.length > 0) {
+
+      console.log(
+        "FFHB BRUT ==================="
       );
+
+      console.log(
+        JSON.stringify(
+          rencontres[0],
+          null,
+          2
+        )
+      );
+
+      console.log(
+        "============================="
+      );
+
+    }
 
     return rencontres.map(r => ({
       journee: Number(
