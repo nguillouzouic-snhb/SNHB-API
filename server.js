@@ -102,19 +102,18 @@ app.get("/debug-classement", async (req, res) => {
       `${BASE_URL}/classements/`
     );
 
-    const html = decodeHtml(
-      response.data
-    );
+    const html = decodeHtml(response.data);
 
-    const composants =
+    const matches =
       [...html.matchAll(
-        /<smartfire-component[^'"]+['"]/g
-      )].map(
-        m => m[1]
-      );
+        /name=['"]([^'"]+)
+      )];
 
     res.json({
-      composants
+      composants:
+        matches.map(
+          m => m[1]
+        )
     });
 
   } catch (error) {
@@ -125,6 +124,7 @@ app.get("/debug-classement", async (req, res) => {
 
   }
 });
+``
 function decodeHtml(html) {
 
   return html
