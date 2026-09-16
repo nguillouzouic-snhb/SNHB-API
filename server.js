@@ -102,18 +102,19 @@ app.get("/debug-classement", async (req, res) => {
       `${BASE_URL}/classements/`
     );
 
-    const html = decodeHtml(response.data);
+    const html = decodeHtml(
+      response.data
+    );
+
+    const composants =
+      [...html.matchAll(
+        /<smartfire-component[^'"]+['"]/g
+      )].map(
+        m => m[1]
+      );
 
     res.json({
-      table: html.includes("<table"),
-      classement: html.includes("classement"),
-      points: html.includes("points"),
-      rang: html.includes("rang"),
-      victoire: html.includes("victoire"),
-      nul: html.includes("nul"),
-      defaite: html.includes("defaite"),
-      goalaverage: html.includes("goalaverage"),
-      equipe: html.includes("ST NAZAIRE HANDBALL 2")
+      composants
     });
 
   } catch (error) {
