@@ -67,7 +67,6 @@ if (j.numero === 1) {
     "URL J1 =",
     url
   );
-
 }
 
 const rencontres =
