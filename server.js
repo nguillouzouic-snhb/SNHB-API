@@ -32,8 +32,12 @@ try {
     const journees =
       extractJournees(html);
 console.log(
-  "JOURNEES",
-  journees
+  "JOURNEES EXTRAITES",
+  JSON.stringify(
+    journees,
+    null,
+    2
+  )
 );
     let toutesLesRencontres = [];
 
