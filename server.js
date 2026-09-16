@@ -17,46 +17,6 @@ app.get("/planning/:equipe", async (req, res) => {
     req.params.equipe
   );
 
-  try {
-  const collectif =
-    COLLECTIFS[req.params.equipe];
-
-  if (!collectif) {
-    return res.status(404).json({
-      erreur: "Collectif inconnu"
-    });
-  }
-
-  const BASE_URL =
-    buildBaseUrl(collectif);
-
-    const response =
-      await axios.get(`${BASE_URL}/`);
-
-    const html =
-      decodeHtml(response.data);
-
-    const journees =
-      extractJournees(html);
-console.log(
- "JOURNEES EXTRAITES",
- JSON.stringify(
-  journees,
-  null,
-   2
-  )
-);
-    let toutesLesRencontres = [];
-
-    for (const j of journees) {
-
-      const url =
-        j.numero === 1
-          ? `${BASE_URL}/`
-          : `${BASE_URL}/journee-${j.numero}/`;
-
-      
-
       try {
 
         const page =
@@ -64,30 +24,32 @@ console.log(
 
         const htmlJournee =
           decodeHtml(page.data);
-console.log(
-  `Analyse J${j.numero}`
-);
+
+        console.log(
+          `Analyse J${j.numero}`
+        );
+
         const rencontres =
           extractRencontres(
             htmlJournee
           );
-console.log(
-  `J${j.numero} : ${rencontres.length} rencontre(s)`
-);
-        
+
+        console.log(
+          `J${j.numero} : ${rencontres.length} rencontre(s)`
+        );
 
         toutesLesRencontres.push(
           ...rencontres
         );
 
       }console.error(
-  `Erreur J${j.numero}`
-);
+        `Erreur J${j.numero}`
+      );
 
-console.error(
-  err.message
-);
-}
+      console.error(
+        err.message
+      );
+      }
     }
 
     // Suppression des doublons
