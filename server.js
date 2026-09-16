@@ -104,16 +104,13 @@ app.get("/debug-classement", async (req, res) => {
 
     const html = decodeHtml(response.data);
 
-    const matches =
+    const occurrences =
       [...html.matchAll(
-        /name=['"]([^'"]+)
+        /ST NAZAIRE HANDBALL 2/g
       )];
 
     res.json({
-      composants:
-        matches.map(
-          m => m[1]
-        )
+      occurrences: occurrences.length
     });
 
   } catch (error) {
@@ -124,7 +121,7 @@ app.get("/debug-classement", async (req, res) => {
 
   }
 });
-``
+
 function decodeHtml(html) {
 
   return html
