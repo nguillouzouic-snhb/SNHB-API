@@ -138,14 +138,7 @@ function extractClassement(html) {
     return classements.map(c => ({
       rang: Number(c.place),
       equipe: c.equipe_libelle,
-      points: Number(c.point),
-      joues: Number(c.joue),
-      gagnes: Number(c.gagne),
-      nuls: Number(c.nul),
-      perdus: Number(c.perdu),
-      butsPour: Number(c.butPlus),
-      butsContre: Number(c.butMoins),
-      difference: Number(c.diff)
+      points: Number(c.point)
     }));
 
   } catch (err) {
