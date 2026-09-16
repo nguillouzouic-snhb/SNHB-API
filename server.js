@@ -104,19 +104,17 @@ app.get("/debug-classement", async (req, res) => {
 
     const html = decodeHtml(response.data);
 
-    const pos =
-      html.indexOf(
-        "ST NAZAIRE HANDBALL 2"
-      );
-
-    res.type("text/plain");
-
-    res.send(
-      html.substring(
-        Math.max(0, pos - 5000),
-        pos + 15000
-      )
-    );
+    res.json({
+      table: html.includes("<table"),
+      classement: html.includes("classement"),
+      points: html.includes("points"),
+      rang: html.includes("rang"),
+      victoire: html.includes("victoire"),
+      nul: html.includes("nul"),
+      defaite: html.includes("defaite"),
+      goalaverage: html.includes("goalaverage"),
+      equipe: html.includes("ST NAZAIRE HANDBALL 2")
+    });
 
   } catch (error) {
 
