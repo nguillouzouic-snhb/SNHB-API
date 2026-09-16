@@ -44,23 +44,7 @@ app.get("/planning/:equipe", async (req, res) => {
     let toutesLesRencontres = [];
 
     for (const j of journees) {
-if (j.numero === 1) {
 
-  const match =
-    htmlJournee.match(
-      /"rencontres":(\[[\s\S]*?\])\}/
-    );
-
-  console.log(
-    "RENCONTRES J1"
-  );
-
-  console.log(
-    match?.[1]
-      ?.substring(0, 3000)
-  );
-
-}
       const url =
         j.numero === 1
           ? `${baseUrl}/`
