@@ -270,29 +270,40 @@ function extractRencontres(html) {
 
     }
 
-return rencontres.map(r => ({
-  journee: Number(
-    r.journeeNumero
-  ),
+    return rencontres.map(r => ({
+      journee: Number(
+        r.journeeNumero
+      ),
 
-  domicile:
-    r.equipe1Libelle,
+      domicile:
+        r.equipe1Libelle,
 
-  exterieur:
-    r.equipe2Libelle,
+      exterieur:
+        r.equipe2Libelle,
 
-  date:
-    r.date,
+      date:
+        r.date,
 
-  fdmCode:
-    r.fdmCode,
+      fdmCode:
+        r.fdmCode,
 
-  scoreDomicile:
-    r.equipe1Score,
+      scoreDomicile:
+        r.equipe1Score,
 
-  scoreExterieur:
-    r.equipe2Score
-}));
+      scoreExterieur:
+        r.equipe2Score
+    }));
+
+  } catch (err) {
+
+    console.error(
+      "Erreur extraction rencontres",
+      err
+    );
+
+    return [];
+  }
+}
 
 
 const PORT =
