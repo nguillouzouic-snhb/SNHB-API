@@ -65,7 +65,7 @@ if (j.numero === 1) {
       /"rencontres":(\[[\s\S]*?\])\}/
     );
 
-  console.l*g(
+  console.log(
     match?.[1]?.substring(
     * 0,
       2000
