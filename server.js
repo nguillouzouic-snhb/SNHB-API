@@ -17,32 +17,42 @@ app.get("/planning/:equipe", async (req, res) => {
     req.params.equipe
   );
 
-      try {
+try {
 
-        const page =
-          await axios.get(url);
+  const page =
+    await axios.get(url);
 
-        const htmlJournee =
-          decodeHtml(page.data);
+  const htmlJournee =
+    decodeHtml(page.data);
 
-        console.log(
-          `Analyse J${j.numero}`
-        );
+  console.log(
+    `Analyse J${j.numero}`
+  );
 
-        const rencontres =
-          extractRencontres(
-            htmlJournee
-          );
+  const rencontres =
+    extractRencontres(
+      htmlJournee
+    );
 
-        console.log(
-          `J${j.numero} : ${rencontres.length} rencontre(s)`
-        );
+  console.log(
+    `J${j.numero} : ${rencontres.length} rencontre(s)`
+  );
 
-        toutesLesRencontres.push(
-          ...rencontres
-        );
+  toutesLesRencontres.push(
+    ...rencontres
+  );
 
-      }console.error(
+} catch (err) {
+
+  console.error(
+    `Erreur J${j.numero}`
+  );
+
+  console.error(
+    err.message
+  );
+
+}console.error(
         `Erreur J${j.numero}`
       );
 
