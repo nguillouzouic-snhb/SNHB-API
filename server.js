@@ -43,17 +43,20 @@ app.get("/planning/:equipe", async (req, res) => {
 
     let toutesLesRencontres = [];
 
-    for (const j of journees) {
+for (const j of journees) {
 
-const url =
-  j.numero === 1
-    ? `${baseUrl}/`
-    : `${baseUrl}/journee-${j.numero}/`;
+  const url =
+    `${BASE_URL}/journee-${j.numero}/`;
 
-      try {
+  console.log(
+    `URL J${j.numero} = ${url}`
+  );
 
-        const page =
-          await axios.get(url);
+  try {
+
+    const page =
+      await axios.get(url);
+
 
         const htmlJournee =
   decodeHtml(page.data);
