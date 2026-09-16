@@ -37,14 +37,14 @@ app.get("/planning/:equipe", async (req, res) => {
 
     const journees =
       extractJournees(html);
-//console.log(
- // "JOURNEES EXTRAITES",
- // JSON.stringify(
- //   journees,
- //   null,
- //   2
- // )
-//);
+console.log(
+ "JOURNEES EXTRAITES",
+ JSON.stringify(
+  journees,
+  null,
+   2
+  )
+);
     let toutesLesRencontres = [];
 
     for (const j of journees) {
@@ -270,9 +270,9 @@ function extractRencontres(html) {
     // DEBUG FFHB
     if (rencontres.length > 0) {
 
-      //console.log(
-      //  "FFHB BRUT ==================="
-     // );
+      console.log(
+        "FFHB BRUT ==================="
+      );
 
       //console.log(
        // JSON.stringify(
