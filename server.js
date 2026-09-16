@@ -102,21 +102,19 @@ app.get("/debug-classement", async (req, res) => {
       `${BASE_URL}/classements/`
     );
 
-    const html = decodeHtml(
-      response.data
-    );
+    const html = decodeHtml(response.data);
 
     const pos =
       html.indexOf(
-        "ST NAZAIRE HANDBALL"
+        "ST NAZAIRE HANDBALL 2"
       );
 
     res.type("text/plain");
 
     res.send(
       html.substring(
-        Math.max(0, pos - 2000),
-        pos + 10000
+        Math.max(0, pos - 5000),
+        pos + 15000
       )
     );
 
