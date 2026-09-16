@@ -10,7 +10,13 @@ const BASE_URL =
   "https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/u13f-44-32272/poule-190214";
 
 app.get("/planning/:equipe", async (req, res) => {
-try {
+
+  console.log(
+    "APPEL PLANNING",
+    req.params.equipe
+  );
+
+  try {
   const collectif =
     COLLECTIFS[req.params.equipe];
 
