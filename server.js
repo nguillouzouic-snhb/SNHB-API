@@ -332,15 +332,23 @@ app.listen(PORT, () => {
 });
 
 const COLLECTIFS = {
+
   U13F2: {
     competition: "u13f-44-32272",
     poule: "190214",
-	club: "ST NAZAIRE HANDBALL 2"
+    club: "ST NAZAIRE HANDBALL 2"
   },
 
   U13F1: {
     competition: "u13f-44-32272",
     poule: "190212",
-	club: "ST NAZAIRE HANDBALL 1"
+    club: "ST NAZAIRE HANDBALL 1"
+  },
+
+  U11F: {
+    competition: "u11f-44-32883",
+    poule: "195004",
+    club: "ST NAZAIRE HANDBALL"
   }
+
 };
