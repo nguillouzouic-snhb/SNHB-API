@@ -60,14 +60,16 @@ const url =
 
 if (j.numero === 1) {
 
-  console.log(
-    "CONTIENT RENCONTRES ?",
-    htmlJournee.includes('"rencontres":')
-  );
+  const match =
+    htmlJournee.match(
+      /"rencontres":(\[[\s\S]*?\])\}/
+    );
 
-  console.log(
-    "TAILLE HTML J1",
-    htmlJournee.length
+  console.l*g(
+    match?.[1]?.substring(
+    * 0,
+      2000
+    )
   );
 
 }
