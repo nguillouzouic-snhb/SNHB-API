@@ -65,7 +65,13 @@ try {
         toutesLesRencontres.push(
           ...rencontres
         );
-
+console.log(
+  JSON.stringify(
+    rencontres[0],
+    null,
+    2
+  )
+);
       } catch (err) {
 
         console.error(
