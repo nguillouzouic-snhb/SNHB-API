@@ -31,7 +31,10 @@ try {
 
     const journees =
       extractJournees(html);
-
+console.log(
+  "JOURNEES",
+  journees
+);
     let toutesLesRencontres = [];
 
     for (const j of journees) {
@@ -267,30 +270,30 @@ function extractRencontres(html) {
 
     }
 
-    return rencontres.map(r => ({
-      journee: Number(
-        r.journeeNumero
-      ),
-      domicile:
-        r.equipe1Libelle,
-      exterieur:
-        r.equipe2Libelle,
-      date:
-        r.date,
-      fdmCode:
-        r.fdmCode
-    }));
+return rencontres.map(r => ({
+  journee: Number(
+    r.journeeNumero
+  ),
 
-  } catch (err) {
+  domicile:
+    r.equipe1Libelle,
 
-    console.error(
-      "Erreur extraction rencontres",
-      err
-    );
+  exterieur:
+    r.equipe2Libelle,
 
-    return [];
-  }
-}
+  date:
+    r.date,
+
+  fdmCode:
+    r.fdmCode,
+
+  scoreDomicile:
+    r.equipe1Score,
+
+  scoreExterieur:
+    r.equipe2Score
+}));
+
 
 const PORT =
   process.env.PORT || 3000;
