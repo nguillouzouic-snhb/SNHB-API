@@ -7,9 +7,6 @@ const app = express();
 
 app.use(cors());
 
-const BASE_URL =
-  "https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/u13f-44-32272/poule-190214";
-
 app.get("/planning/:equipe", async (req, res) => {
 
   console.log(
@@ -17,51 +14,99 @@ app.get("/planning/:equipe", async (req, res) => {
     req.params.equipe
   );
 
-try {
+  try {
 
-  const page =
-    await axios.get(url);
+    const collectif =
+      COLLECTIFS[req.params.equipe];
 
-  const htmlJournee =
-    decodeHtml(page.data);
+    if (!collectif) {
 
-  console.log(
-    `Analyse J${j.numero}`
-  );
+      return res.status(404).json({
+        erreur: "Collectif inconnu"
+      });
 
-  const rencontres =
-    extractRencontres(
-      htmlJournee
-    );
-
-  console.log(
-    `J${j.numero} : ${rencontres.length} rencontre(s)`
-  );
-
-  toutesLesRencontres.push(
-    ...rencontres
-  );
-
-} catch (err) {
-
-  console.error(
-    `Erreur J${j.numero}`
-  );
-
-  console.error(
-    err.message
-  );
-
-}console.error(
-        `Erreur J${j.numero}`
-      );
-
-      console.error(
-        err.message
-      );
-      }
     }
 
+    const baseUrl =
+      buildBaseUrl(collectif);
+
+    const response =
+      await axios.get(
+        `${baseUrl}/`
+      );
+
+    const html =
+      decodeHtml(response.data);
+
+    const journees =
+      extractJournees(html);
+
+    let toutesLesRencontres = [];
+
+    for (const j of journees) {
+
+      const url =
+        j.numero === 1
+          ? `${baseUrl}/`
+          : `${baseUrl}/journee-${j.numero}/`;
+
+      try {
+
+        const page =
+          await axios.get(url);
+
+        const htmlJournee =
+          decodeHtml(page.data);
+
+        const rencontres =
+          extractRencontres(
+            htmlJournee
+          );
+
+        toutesLesRencontres.push(
+          ...rencontres
+        );
+
+      } catch (err) {
+
+        console.error(
+          `Erreur J${j.numero}`,
+          err.message
+        );
+
+      }
+
+    }
+
+    const map = new Map();
+
+    toutesLesRencontres.forEach(r => {
+      map.set(
+        r.fdmCode,
+        r
+      );
+    });
+
+    const rencontresUniques =
+      [...map.values()];
+
+    res.json({
+      journees,
+      rencontres:
+        rencontresUniques
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      error: error.message
+    });
+
+  }
+
+});
     // Suppression des doublons
     const map = new Map();
 
@@ -108,10 +153,7 @@ app.get("/classement/:equipe", async (req, res) => {
 
     const BASE_URL =
       buildBaseUrl(collectif);
-console.log(
-  `URL JOURNEE ${j.numero} :`,
-  url
-);
+
     const response =
       await axios.get(
         `${BASE_URL}/classements/`
