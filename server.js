@@ -10,7 +10,7 @@ const BASE_URL =
   "https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/u13f-44-32272/poule-190214";
 
 app.get("/planning/:equipe", async (req, res) => {
-
+try {
   const collectif =
     COLLECTIFS[req.params.equipe];
 
@@ -107,33 +107,47 @@ app.get("/planning/:equipe", async (req, res) => {
 });
 app.get("/classement/:equipe", async (req, res) => {
 
-  const collectif =
-    COLLECTIFS[req.params.equipe];
+  try {
 
-  if (!collectif) {
-    return res.status(404).json({
-      erreur: "Collectif inconnu"
-    });
-  }
+    const collectif =
+      COLLECTIFS[req.params.equipe];
 
-  const BASE_URL =
-    buildBaseUrl(collectif);
+    if (!collectif) {
 
-  const response =
-    await axios.get(
-      `${BASE_URL}/classements/`
+      return res.status(404).json({
+        erreur: "Collectif inconnu"
+      });
+
+    }
+
+    const BASE_URL =
+      buildBaseUrl(collectif);
+
+    const response =
+      await axios.get(
+        `${BASE_URL}/classements/`
+      );
+
+    const html =
+      decodeHtml(response.data);
+
+    res.json(
+      extractClassement(html)
     );
 
-  const html =
-    decodeHtml(response.data);
+  } catch (error) {
 
-  res.json(
-    extractClassement(html)
-  );
+    res.status(500).json({
+      erreur: error.message
+    });
+
+  }
 
 });
 function buildBaseUrl(collectif) {
+
   return `https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/${collectif.competition}/poule-${collectif.poule}`;
+
 }
 function extractClassement(html) {
   try {
