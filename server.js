@@ -274,13 +274,13 @@ function extractRencontres(html) {
         "FFHB BRUT ==================="
       );
 
-      //console.log(
-       // JSON.stringify(
-      //    rencontres[0],
-      //    null,
-      //    2
-      //  )
-     // );
+      console.log(
+       JSON.stringify(
+          rencontres[0],
+          null,
+          2
+        )
+     );
 
       //console.log(
       //  "============================="
