@@ -43,8 +43,7 @@ for (const j of journees) {
 
   const url =
     `${baseUrl}/journee-${j.numero}/`;
-  );
-
+  
   try {
 
     const page =
