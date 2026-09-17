@@ -174,6 +174,17 @@ app.get(
   }
 );
 
+app.get(
+  "/test-pdf/:fdmCode",
+  async (req, res) => {
+
+    res.json({
+      fdmCode: req.params.fdmCode
+    });
+
+  }
+);
+
 function buildBaseUrl(collectif) {
 
   return `https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/${collectif.competition}/poule-${collectif.poule}`;
