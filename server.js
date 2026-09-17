@@ -9,10 +9,6 @@ app.use(cors());
 
 app.get("/planning/:equipe", async (req, res) => {
 
-  console.log(
-    "APPEL PLANNING",
-    req.params.equipe
-  );
 
   try {
 
@@ -47,9 +43,6 @@ for (const j of journees) {
 
   const url =
     `${baseUrl}/journee-${j.numero}/`;
-
-  console.log(
-    `URL J${j.numero} = ${url}`
   );
 
   try {
@@ -63,10 +56,7 @@ for (const j of journees) {
 
 if (j.numero === 1) {
 
-  console.log(
-    "URL J1 =",
-    url
-  );
+
 }
 
 const rencontres =
@@ -294,22 +284,6 @@ function extractRencontres(html) {
 ) {
 
   debugAffiche = true;
-
-  console.log(
-    "FFHB BRUT ==================="
-  );
-
-  console.log(
-    JSON.stringify(
-      rencontres[0],
-      null,
-      2
-    )
-  );
-
-  console.log(
-    "============================="
-  );
 
 }
 
