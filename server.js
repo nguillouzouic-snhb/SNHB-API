@@ -121,6 +121,7 @@ const rencontres =
     
 app.get("/classement/:equipe", async (req, res) => {
 
+
   try {
 
     const collectif =
@@ -158,6 +159,32 @@ app.get("/classement/:equipe", async (req, res) => {
   }
 
 });
+
+app.get(
+  "/joueuses/:equipe",
+  async (req, res) => {
+
+    res.json([
+      {
+        nom: "Emma DUPONT",
+        matchs: 5,
+        buts: 12
+      },
+      {
+        nom: "Lina MARTIN",
+        matchs: 4,
+        buts: 8
+      },
+      {
+        nom: "Zoé BERNARD",
+        matchs: 3,
+        buts: 5
+      }
+    ]);
+
+  }
+);
+
 function buildBaseUrl(collectif) {
 
   return `https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/${collectif.competition}/poule-${collectif.poule}`;
