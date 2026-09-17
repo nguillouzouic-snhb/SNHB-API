@@ -185,6 +185,35 @@ app.get(
   }
 );
 
+app.get("/joueuses/:equipe", async (req, res) => {
+
+  res.json([
+    {
+      nom: "PONTACQ Emy",
+      matchs: 1,
+      buts: 12,
+      septMetres: 1,
+      tirs: 11
+    },
+    {
+      nom: "FORET Axelle",
+      matchs: 1,
+      buts: 5,
+      septMetres: 0,
+      tirs: 5
+    },
+    {
+      nom: "GICQUEAUX Mariam",
+      matchs: 1,
+      buts: 4,
+      septMetres: 0,
+      tirs: 4
+    }
+  ]);
+
+});
+``
+
 function buildBaseUrl(collectif) {
 
   return `https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/${collectif.competition}/poule-${collectif.poule}`;
