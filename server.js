@@ -178,33 +178,72 @@ app.get(
   }
 );
 
-app.get("/joueuses/:equipe", async (req, res) => {
+app.get(
+  "/joueuses/:equipe",
+  async (req, res) => {
 
-  res.json([
-    {
-      nom: "PONTACQ Emy",
-      matchs: 1,
-      buts: 12,
-      septMetres: 1,
-      tirs: 11
-    },
-    {
-      nom: "FORET Axelle",
-      matchs: 1,
-      buts: 5,
-      septMetres: 0,
-      tirs: 5
-    },
-    {
-      nom: "GICQUEAUX Mariam",
-      matchs: 1,
-      buts: 4,
-      septMetres: 0,
-      tirs: 4
+    try {
+
+      const collectif =
+        COLLECTIFS[
+          req.params.equipe
+        ];
+
+      const baseUrl =
+        buildBaseUrl(collectif);
+
+      const response =
+        await axios.get(
+          `${baseUrl}/`
+        );
+
+      const html =
+        decodeHtml(
+          response.data
+        );
+
+      const journees =
+        extractJournees(
+          html
+        );
+
+      let rencontres = [];
+
+      for (const j of journees) {
+
+        const page =
+          await axios.get(
+            `${baseUrl}/journee-${j.numero}/`
+          );
+
+        const htmlJournee =
+          decodeHtml(
+            page.data
+          );
+
+        rencontres.push(
+          ...extractRencontres(
+            htmlJournee
+          )
+        );
+
+      }
+
+      res.json({
+        nbRencontres:
+          rencontres.length
+      });
+
+    } catch (err) {
+
+      res.status(500).json({
+        erreur: err.message
+      });
+
     }
-  ]);
 
-});
+  }
+);
 
 
 function buildBaseUrl(collectif) {
