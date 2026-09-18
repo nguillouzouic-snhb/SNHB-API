@@ -5,10 +5,9 @@ import cors from "cors";
 import * as pdfParse from "pdf-parse";
 
 console.log(
-  "CLEFS",
-  Object.keys(pdfParse)
+  "TYPE PDFParse =",
+  typeof pdfParse.PDFParse
 );
-
 const app = express();
 
 app.use(cors());
