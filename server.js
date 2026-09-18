@@ -195,24 +195,61 @@ for (const ligne of lignes) {
     continue;
   }
 
-  const [
-    ,
-    numero,
-    nom,
-    prenom,
-    licence,
-    buts,
-    septMetres,
-    tirs
-  ] = match;
+const [
+  ,
+  numero,
+  nom,
+  prenom,
+  licence,
+  buts,
+  septMetres,
+  tirs
+] = match;
 
-  joueuses.push({
-    nom: `${nom.trim()} ${prenom.trim()}`,
-    matchs: 1,
-    buts: Number(buts || 0),
-    septMetres: Number(septMetres || 0),
-    tirs: Number(tirs || buts || 0)
-  });
+let nbButs = 0;
+let nb7m = 0;
+let nbTirs = 0;
+
+if (
+  buts &&
+  septMetres &&
+  tirs
+) {
+
+  // ex : PONTACQ Emy
+  // 12 1 11
+
+  nbButs = Number(buts);
+  nb7m = Number(septMetres);
+  nbTirs = Number(tirs);
+
+}
+else if (
+  buts &&
+  septMetres
+) {
+
+  // ex : FORET Axelle
+  // 5 5
+
+  nbButs = Number(buts);
+  nbTirs = Number(septMetres);
+
+}
+
+joueuses.push({
+
+  nom: `${nom.trim()} ${prenom.trim()}`,
+
+  matchs: 1,
+
+  buts: nbButs,
+
+  septMetres: nb7m,
+
+  tirs: nbTirs
+
+});
 
 }
 
