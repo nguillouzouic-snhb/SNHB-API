@@ -212,7 +212,7 @@ app.get("/joueuses/:equipe", async (req, res) => {
   ]);
 
 });
-``
+
 
 function buildBaseUrl(collectif) {
 
