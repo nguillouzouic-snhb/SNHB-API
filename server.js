@@ -4,6 +4,8 @@ import axios from "axios";
 import cors from "cors";
 import * as pdfParse from "pdf-parse";
 
+console.log("PDFPARSE =", pdfParse);
+
 const app = express();
 
 app.use(cors());
