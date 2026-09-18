@@ -178,7 +178,7 @@ app.get(
   await parser.getText();
 
 res.json(texte);
-      });
+     
 
     } catch (err) {
 
