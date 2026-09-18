@@ -176,15 +176,15 @@ app.get(
           data: response.data
         });
 
-      console.log(
-        "METHODES =",
-        Object.getOwnPropertyNames(
-          Object.getPrototypeOf(parser)
-        )
-      );
+      await parser.load();
+
+      const texte =
+        await parser.getText();
 
       res.json({
-        ok: true
+        texte:
+          JSON.stringify(texte)
+            .substring(0, 2000)
       });
 
     } catch (err) {
