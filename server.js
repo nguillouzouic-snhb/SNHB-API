@@ -225,40 +225,39 @@ app.get(
           ...extractRencontres(
             htmlJournee
           )
-		  const matchsEquipe =
-  rencontres.filter(r =>
-    r.domicile === collectif.club ||
-    r.exterieur === collectif.club
-  );
-res.json({
-  nbRencontres: rencontres.length,
-  nbMatchsEquipe: matchsEquipe.length
-});
-const matchsJoues =
-  matchsEquipe.filter(r =>
-    r.fdmCode &&
-    r.scoreDomicile !== null &&
-    r.scoreExterieur !== null
-  );
-res.json({
-  nbMatchsEquipe:
-    matchsEquipe.length,
-
-  matchsJoues:
-    matchsJoues.length,
-
-  codes:
-    matchsJoues.map(
-      m => m.fdmCode
-    )
-});
         );
 
       }
 
+      const matchsEquipe =
+        rencontres.filter(
+          r =>
+            r.domicile === collectif.club ||
+            r.exterieur === collectif.club
+        );
+
+      const matchsJoues =
+        matchsEquipe.filter(
+          r =>
+            r.fdmCode &&
+            r.scoreDomicile !== null &&
+            r.scoreExterieur !== null
+        );
+
       res.json({
         nbRencontres:
-          rencontres.length
+          rencontres.length,
+
+        nbMatchsEquipe:
+          matchsEquipe.length,
+
+        matchsJoues:
+          matchsJoues.length,
+
+        codes:
+          matchsJoues.map(
+            m => m.fdmCode
+          )
       });
 
     } catch (err) {
@@ -271,7 +270,6 @@ res.json({
 
   }
 );
-
 
 function buildBaseUrl(collectif) {
 
