@@ -166,29 +166,26 @@ app.get(
       const url =
         `https://fdm.fdme.ffhandball.fr/${code[0]}/${code[1]}/${code[2]}/${code[3]}/${code}.pdf`;
 
-      const response =
-        await axios.get(url, {
-          responseType: "arraybuffer"
-        });
+const response =
+  await axios.get(url, {
+    responseType: "arraybuffer"
+  });
+
+const parser =
+  new pdfParse.PDFParse({
+    data: response.data
+  });
+
 console.log(
-  response.data.slice(0, 20)
-);
-      res.json({
-        taille: response.data.length,
-        type: typeof PDFParse
-      });
-
-    } catch (err) {
-
-      res.status(500).json({
-        erreur: err.message
-      });
-
-    }
-
-  }
+  "METHODES =",
+  Object.getOwnPropertyNames(
+    Object.getPrototypeOf(parser)
+  )
 );
 
+res.json({
+  ok: true
+});
 
 app.get("/joueuses/:equipe", async (req, res) => {
 
