@@ -156,34 +156,12 @@ app.get(
   "/test-pdf/:fdmCode",
   async (req, res) => {
 
-    try {
+    constonst url =
+      `https://fdm.fdme.ffhandball.fr/${code[0]}/${code[1]}/${code[2]}/${code[3]}/${code}.pdf`;
 
-      const code =
-        req.params.fdmCode;
-
-      const url =
-        `https://fdm.fdme.ffhandball.fr/${code[0]}/${code[1]}/${code[2]}/${code[3]}/${code}.pdf`;
-
-const response =
-  await axios.get(url, {
-    responseType: "arraybuffer"
-  });
-
-const pdf =
-  await pdfParse(response.data);
-
-res.json({
-  texte: pdf.text
-});
-
-
-    } catch (err) {
-
-      res.status(500).json({
-        erreur: err.message
-      });
-
-    }
+    res.json({
+      url
+    });
 
   }
 );
