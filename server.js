@@ -156,7 +156,7 @@ app.get(
   "/test-pdf/:fdmCode",
   async (req, res) => {
 
-    constonst url =
+    const url =
       `https://fdm.fdme.ffhandball.fr/${code[0]}/${code[1]}/${code[2]}/${code[3]}/${code}.pdf`;
 
     res.json({
