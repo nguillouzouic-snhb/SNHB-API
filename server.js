@@ -4,10 +4,6 @@ import axios from "axios";
 import cors from "cors";
 import * as pdfParse from "pdf-parse";
 
-console.log(
-  "TYPE PDFParse =",
-  typeof pdfParse.PDFParse
-);
 const app = express();
 
 app.use(cors());
@@ -179,12 +175,9 @@ app.get(
       await parser.load();
 
       const texte =
-        await parser.getText();
+  await parser.getText();
 
-      res.json({
-        texte:
-          JSON.stringify(texte)
-            .substring(0, 2000)
+res.json(texte);
       });
 
     } catch (err) {
