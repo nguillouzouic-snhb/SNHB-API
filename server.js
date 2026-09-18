@@ -2,9 +2,8 @@ let debugAffiche = false;
 import express from "express";
 import axios from "axios";
 import cors from "cors";
-import * as pdfParse from "pdf-parse";
 
-console.log("PDFPARSE =", pdfParse);
+
 
 const app = express();
 
@@ -156,24 +155,35 @@ app.get(
   "/test-pdf/:fdmCode",
   async (req, res) => {
 
-    const code =
-      req.params.fdmCode;
+    try {
 
-    const url =
-      `https://fdm.fdme.ffhandball.fr/${code[0]}/${code[1]}/${code[2]}/${code[3]}/${code}.pdf`;
+      const code =
+        req.params.fdmCode;
 
-    console.log(
-      "URL PDF =",
-      url
-    );
+      const url =
+        `https://fdm.fdme.ffhandball.fr/${code[0]}/${code[1]}/${code[2]}/${code[3]}/${code}.pdf`;
 
-    res.json({
-      fdmCode: code,
-      url
-    });
+      const response =
+        await axios.get(url, {
+          responseType: "arraybuffer"
+        });
+
+      res.json({
+        taille: response.data.length,
+        url
+      });
+
+    } catch (err) {
+
+      res.status(500).json({
+        erreur: err.message
+      });
+
+    }
 
   }
 );
+
 
 app.get("/joueuses/:equipe", async (req, res) => {
 
