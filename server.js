@@ -310,9 +310,17 @@ for (const match of matchsJoues) {
 
 res.json(
   [...joueusesMap.values()]
-    .sort(
-      (a, b) => b.buts - a.buts
-    )
+    .sort((a, b) => {
+
+      if (b.buts !== a.buts) {
+        return b.buts - a.buts;
+      }
+
+      return a.nom.localeCompare(
+        b.nom
+      );
+
+    })
 );
 
 
