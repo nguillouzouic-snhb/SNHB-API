@@ -149,33 +149,7 @@ app.get("/classement/:equipe", async (req, res) => {
 
 });
 
-app.get(
-  "/joueuses/:equipe",
-  async (req, res) => {
-
-    res.json([
-      {
-        nom: "Emma DUPONT",
-        matchs: 5,
-        buts: 12
-      },
-      {
-        nom: "Lina MARTIN",
-        matchs: 4,
-        buts: 8
-      },
-      {
-        nom: "Zoé BERNARD",
-        matchs: 3,
-        buts: 5
-      }
-    ]);
-
-  }
-);
-
-app.get(
-  "/test-pdf/:fdmCode",
+app.get(  "/test-pdf/:fdmCode",
   async (req, res) => {
 
     res.json({
