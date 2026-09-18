@@ -2,8 +2,12 @@ let debugAffiche = false;
 import express from "express";
 import axios from "axios";
 import cors from "cors";
+import * as pdfParse from "pdf-parse";
 
-
+console.log(
+  "CLEFS",
+  Object.keys(pdfParse)
+);
 
 const app = express();
 
@@ -167,10 +171,12 @@ app.get(
         await axios.get(url, {
           responseType: "arraybuffer"
         });
-
+console.log(
+  response.data.slice(0, 20)
+);
       res.json({
         taille: response.data.length,
-        url
+        type: typeof PDFParse
       });
 
     } catch (err) {
