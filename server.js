@@ -244,21 +244,77 @@ app.get(
             r.scoreExterieur !== null
         );
 
-      res.json({
-        nbRencontres:
-          rencontres.length,
+const joueusesMap =
+  new Map();
 
-        nbMatchsEquipe:
-          matchsEquipe.length,
+for (const match of matchsJoues) {
 
-        matchsJoues:
-          matchsJoues.length,
+  try {
 
-        codes:
-          matchsJoues.map(
-            m => m.fdmCode
-          )
-      });
+    const statsMatch =
+      await getStatsMatch(
+        match.fdmCode
+      );
+
+    for (const j of statsMatch) {
+
+      if (
+        !joueusesMap.has(
+          j.nom
+        )
+      ) {
+
+        joueusesMap.set(
+          j.nom,
+          {
+            nom: j.nom,
+            matchs: 0,
+            buts: 0,
+            tirs: 0,
+            septMetres: 0
+          }
+        );
+
+      }
+
+      const joueuse =
+        joueusesMap.get(
+          j.nom
+        );
+
+      joueuse.matchs +=
+        j.matchs;
+
+      joueuse.buts +=
+        j.buts;
+
+      joueuse.tirs +=
+        j.tirs;
+
+      joueuse.septMetres +=
+        j.septMetres;
+
+    }
+
+  } catch (err) {
+
+    console.error(
+      "Erreur FDM",
+      match.fdmCode,
+      err.message
+    );
+
+  }
+
+}
+
+res.json(
+  [...joueusesMap.values()]
+    .sort(
+      (a, b) => b.buts - a.buts
+    )
+);
+
 
     } catch (err) {
 
