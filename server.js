@@ -154,10 +154,18 @@ app.get("/classement/:equipe", async (req, res) => {
 
 app.get(
   "/test-pdf/:fdmCode",
-  async (req,arams.fdmCode;
+  async (req, res) => {
+
+    const code =
+      req.params.fdmCode;
 
     const url =
       `https://fdm.fdme.ffhandball.fr/${code[0]}/${code[1]}/${code[2]}/${code[3]}/${code}.pdf`;
+
+    console.log(
+      "URL PDF =",
+      url
+    );
 
     res.json({
       fdmCode: code,
