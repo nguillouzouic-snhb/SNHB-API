@@ -2,7 +2,7 @@ let debugAffiche = false;
 import express from "express";
 import axios from "axios";
 import cors from "cors";
-import pdfParse from "pdf-parse";
+import * as pdfParse from "pdf-parse";
 
 const app = express();
 
@@ -185,6 +185,7 @@ res.json({
 
   }
 );
+
 app.get("/joueuses/:equipe", async (req, res) => {
 
   res.json([
