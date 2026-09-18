@@ -176,6 +176,49 @@ app.get(
 
       const texte =
   await parser.getText();
+const blocClub =
+  texte.text.split("Club\n visiteur")[0];
+
+const lignes =
+  blocClub.split("\n");
+
+const joueuses = [];
+
+for (const ligne of lignes) {
+
+  const match =
+    ligne.match(
+      /^(?:X\s+)?(\d+)\s+([A-Z\- ]+)\s+([A-Za-z\- ]+)\s+(\d{13})\s+[A-Z]+(?:\s+(\d+))?(?:\s+(\d+))?(?:\s+(\d+))?$/
+    );
+
+  if (!match) {
+    continue;
+  }
+
+  const [
+    ,
+    numero,
+    nom,
+    prenom,
+    licence,
+    buts,
+    septMetres,
+    tirs
+  ] = match;
+
+  joueuses.push({
+    nom: `${nom.trim()} ${prenom.trim()}`,
+    matchs: 1,
+    buts: Number(buts || 0),
+    septMetres: Number(septMetres || 0),
+    tirs: Number(tirs || buts || 0)
+  });
+
+}
+
+res.json({
+  joueuses
+});
 
 res.json(texte);
      
