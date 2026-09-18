@@ -2,6 +2,7 @@ let debugAffiche = false;
 import express from "express";
 import axios from "axios";
 import cors from "cors";
+import pdfParse from "pdf-parse";
 
 const app = express();
 
@@ -161,10 +162,18 @@ app.get(
       const url =
         `https://fdm.fdme.ffhandball.fr/${code[0]}/${code[1]}/${code[2]}/${code[3]}/${code}/${code}.pdf`;
 
-      res.json({
-        fdmCode: code,
-        url
-      });
+const response =
+  await axios.get(url, {
+    responseType: "arraybuffer"
+  });
+
+const pdf =
+  await pdfParse(response.data);
+
+res.json({
+  texte: pdf.text
+});
+
 
     } catch (err) {
 
