@@ -156,109 +156,14 @@ app.get(
 
     try {
 
-      const code =
-        req.params.fdmCode;
+      const joueuses =
+        await getStatsMatch(
+          req.params.fdmCode
+        );
 
-      const url =
-        `https://fdm.fdme.ffhandball.fr/${code[0]}/${code[1]}/${code[2]}/${code[3]}/${code}.pdf`;
-
-      const response =
-        await axios.get(url, {
-          responseType: "arraybuffer"
-        });
-
-      const parser =
-        new pdfParse.PDFParse({
-          data: response.data
-        });
-
-      await parser.load();
-
-      const texte =
-  await parser.getText();
-const blocClub =
-  texte.text.split("Club\n visiteur")[0];
-
-const lignes =
-  blocClub.split("\n");
-
-const joueuses = [];
-
-for (const ligne of lignes) {
-
-  const match =
-    ligne.match(
-      /^(?:X\s+)?(\d+)\s+([A-Z\- ]+)\s+([A-Za-z\- ]+)\s+(\d{13})\s+[A-Z]+(?:\s+(\d+))?(?:\s+(\d+))?(?:\s+(\d+))?$/
-    );
-
-  if (!match) {
-    continue;
-  }
-
-const [
-  ,
-  numero,
-  nom,
-  prenom,
-  licence,
-  buts,
-  septMetres,
-  tirs
-] = match;
-
-let nbButs = 0;
-let nb7m = 0;
-let nbTirs = 0;
-
-if (
-  buts &&
-  septMetres &&
-  tirs
-) {
-
-  // ex : PONTACQ Emy
-  // 12 1 11
-
-  nbButs = Number(buts);
-  nb7m = Number(septMetres);
-  nbTirs = Number(tirs);
-
-}
-else if (
-  buts &&
-  septMetres
-) {
-
-  // ex : FORET Axelle
-  // 5 5
-
-  nbButs = Number(buts);
-  nbTirs = Number(septMetres);
-
-}
-
-joueuses.push({
-
-  nom: `${nom.trim()} ${prenom.trim()}`,
-
-  matchs: 1,
-
-  buts: nbButs,
-
-  septMetres: nb7m,
-
-  tirs: nbTirs
-
-});
-
-}
-
-res.json({
-  joueuses
-});
-
-res.json(texte);
-     
+      res.json({
+        joueuses
+      });
 
     } catch (err) {
 
@@ -449,6 +354,103 @@ function extractRencontres(html) {
   }
 }
 
+async function getStatsMatch(fdmCode) {
+
+  const url =
+    `https://fdm.fdme.ffhandball.fr/${fdmCode[0]}/${fdmCode[1]}/${fdmCode[2]}/${fdmCode[3]}/${fdmCode}.pdf`;
+
+  const response =
+    await axios.get(url, {
+      responseType: "arraybuffer"
+    });
+
+  const parser =
+    new pdfParse.PDFParse({
+      data: response.data
+    });
+
+  await parser.load();
+
+  const texte =
+    await parser.getText();
+
+  const blocClub =
+    texte.text.split(
+      "Club\n visiteur"
+    )[0];
+
+  const lignes =
+    blocClub.split("\n");
+
+  const joueuses = [];
+
+  for (const ligne of lignes) {
+
+    const match =
+      ligne.match(
+        /^(?:X\s+)?(\d+)\s+([A-Z\- ]+)\s+([A-Za-z\- ]+)\s+(\d{13})\s+[A-Z]+(?:\s+(\d+))?(?:\s+(\d+))?(?:\s+(\d+))?$/
+      );
+
+    if (!match) {
+      continue;
+    }
+
+    const [
+      ,
+      numero,
+      nom,
+      prenom,
+      licence,
+      buts,
+      septMetres,
+      tirs
+    ] = match;
+
+    let nbButs = 0;
+    let nb7m = 0;
+    let nbTirs = 0;
+
+    if (
+      buts &&
+      septMetres &&
+      tirs
+    ) {
+
+      nbButs = Number(buts);
+      nb7m = Number(septMetres);
+      nbTirs = Number(tirs);
+
+    }
+    else if (
+      buts &&
+      septMetres
+    ) {
+
+      nbButs = Number(buts);
+      nbTirs = Number(septMetres);
+
+    }
+
+    joueuses.push({
+
+      nom:
+        `${nom.trim()} ${prenom.trim()}`,
+
+      matchs: 1,
+
+      buts: nbButs,
+
+      septMetres: nb7m,
+
+      tirs: nbTirs
+
+    });
+
+  }
+
+  return joueuses;
+
+}
 
 const PORT =
   process.env.PORT || 3000;
