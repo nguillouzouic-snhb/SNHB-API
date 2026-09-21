@@ -696,59 +696,6 @@ joueuses.push({
 });
 
 }
-const statsButs =
-  new Map();
-
-const lignesDeroulement =
-  texteComplet.split("\n");
-
-for (const ligne of lignesDeroulement) {
-
-  const matchBut =
-    ligne.match(
-      /But(?:\s+7m)?\s+([A-Z\-]+)\s+(.+)$/
-    );
-
-  if (!matchBut) {
-    continue;
-  }
-
-  const nomJoueuse =
-    `${matchBut[1]} ${matchBut[2]}`
-      .trim();
-
-  if (!statsButs.has(
-    nomJoueuse
-  )) {
-
-    statsButs.set(
-      nomJoueuse,
-      {
-        buts: 0,
-        septMetres: 0
-      }
-    );
-
-  }
-
-  const stats =
-    statsButs.get(
-      nomJoueuse
-    );
-
-  stats.buts++;
-
-  if (
-    ligne.includes(
-      "But 7m"
-    )
-  ) {
-
-    stats.septMetres++;
-
-  }
-
-}
   return joueuses;
 
 }
