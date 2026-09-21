@@ -519,28 +519,60 @@ const texte =
 const texteComplet =
   texte.text;
   
+const statsButs =
+  new Map();
+
 const lignesDeroulement =
   texteComplet.split("\n");
-  
-const statsButs =
-  new Map();  
-  
-  for (
-  const ligne of lignesDeroulement
-) {
 
-  if (
-    ligne.includes("But")
-  ) {
+for (const ligne of lignesDeroulement) {
 
-    console.log(
-      "BUT >>>",
-      ligne
+  const matchBut =
+    ligne.match(
+      /But(?:\s+7m)?\s+([A-Z\-]+)\s+(.+)$/
+    );
+
+  if (!matchBut) {
+    continue;
+  }
+
+  const nomJoueuse =
+    `${matchBut[1]} ${matchBut[2]}`
+      .trim();
+
+  if (!statsButs.has(
+    nomJoueuse
+  )) {
+
+    statsButs.set(
+      nomJoueuse,
+      {
+        buts: 0,
+        septMetres: 0
+      }
     );
 
   }
 
+  const stats =
+    statsButs.get(
+      nomJoueuse
+    );
+
+  stats.buts++;
+
+  if (
+    ligne.includes(
+      "But 7m"
+    )
+  ) {
+
+    stats.septMetres++;
+
+  }
+
 }
+``
   
 const indexClub =
   texteComplet.indexOf(
@@ -637,30 +669,6 @@ for (const ligne of lignes) {
 
   const prenom =
     morceaux.slice(2).join(" ");
-
-  let nbButs = 0;
-  let nb7m = 0;
-
-  const chiffres =
-    apresLicence.match(/\d+/g) || [];
-
-  if (chiffres.length >= 3) {
-
-    nbButs =
-      Number(chiffres[0]);
-
-    nb7m =
-      Number(chiffres[1]);
-
-  }
-  else if (
-    chiffres.length >= 2
-  ) {
-
-    nbButs =
-      Number(chiffres[0]);
-
-  }
 
 const nomComplet =
   `${nom.trim()} ${prenom.trim()}`;
