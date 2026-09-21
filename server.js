@@ -840,6 +840,65 @@ function setCache(
 
 }
 
+async function warmupCache() {
+
+  console.log("Préchargement du cache...");
+
+  const equipes = [
+    "U13F1",
+    "U13F2",
+    "U11F"
+  ];
+
+  for (const equipe of equipes) {
+
+    try {
+
+      await chargerPlanning(equipe);
+      await chargerClassement(equipe);
+      await chargerJoueuses(equipe);
+
+      console.log(
+        `Cache OK ${equipe}`
+      );
+
+    } catch (err) {
+
+      console.error(
+        `Erreur warmup ${equipe}`,
+        err.message
+      );
+
+    }
+
+  }
+
+}
+
+app.listen(PORT, async () => {
+
+  console.log(
+    `API SNHB démarrée sur le port ${PORT}`
+  );
+
+  warmupCache();
+
+});
+
+setInterval(
+  async () => {
+
+    console.log(
+      "Refresh cache..."
+    );
+
+    await warmupCache();
+
+  },
+  60 * 60 * 1000
+);
+``
+
 const PORT =
   process.env.PORT || 3000;
 
