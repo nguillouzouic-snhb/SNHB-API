@@ -573,11 +573,15 @@ const lignes =
   const joueuses = [];
 
   for (const ligne of lignes) {
-
-    const match =
-      ligne.match(
-        /^(?:X\s+)?(\d+)\s+([A-Z\- ]+)\s+([A-Za-z\- ]+)\s+(\d{13})\s+[A-Z]+(?:\s+(\d+))?(?:\s+(\d+))?(?:\s+(\d+))?$/
-      );
+const ligneNettoyee =
+  ligne.replace(
+    /\s+[A-Z]$/,
+    ""
+  );
+const match =
+  ligneNettoyee.match(
+    /^(?:X\s+)?(\d+)\s+([A-Z\- ]+)\s+([A-Za-z\- ]+)\s+(\d{13})\s+[A-Z]+(?:\s+(\d+))?(?:\s+(\d+))?(?:\s+(\d+))?$/
+  );
 if (!match) {
 
   console.log(
