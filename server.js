@@ -645,6 +645,10 @@ const lignes =
       nbTirs = Number(septMetres);
 
     }
+console.log(
+  "LIGNE MATCH",
+  ligne
+);
 
     joueuses.push({
 
@@ -674,15 +678,18 @@ console.log(
   blocVisiteur.substring(0,300)
 );
 console.log(
-  "NB JOUEUSES =",
-  joueuses.length
+  "JOUEUSES MATCH",
+  fdmCode
 );
 
 console.log(
-  "PREMIERE =",
-  joueuses[0]
+  JSON.stringify(
+    joueuses,
+    null,
+    2
+  )
 );
-``
+
   return joueuses;
 
 }
