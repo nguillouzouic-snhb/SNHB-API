@@ -584,8 +584,18 @@ else {
 
 }
 
-  const lignes =
-    blocClub.split("\n");
+const debutClub =
+  blocClub.indexOf(
+    clubRecherche
+  );
+
+const zoneJoueuses =
+  blocClub.substring(
+    debutClub
+  );
+
+const lignes =
+  zoneJoueuses.split("\n");
 
   const joueuses = [];
 
