@@ -535,54 +535,47 @@ console.log(
 );
 
 
-const blocs =
-  texteComplet.split(
-    "Club\n visiteur"
+const indexClub =
+  texteComplet.indexOf(
+    clubRecherche
   );
 
-const blocRecevant =
-  blocs[0];
-
-const blocVisiteur =
-  blocs.length > 1
-    ? blocs[1].split(
-        "Détail score"
-      )[0]
-    : "";
-
-let blocClub = "";
-
-if (
-  blocRecevant.includes(
-    clubRecherche
-  )
-) {
-
-  blocClub =
-    blocRecevant;
-
-}
-else if (
-  blocVisiteur.includes(
-    clubRecherche
-  )
-) {
-
-  blocClub =
-    blocVisiteur;
-
-}
-else {
+if (indexClub === -1) {
 
   console.error(
-    "Club introuvable dans la feuille",
-    clubRecherche,
-    fdmCode
+    "Club introuvable",
+    clubRecherche
   );
 
   return [];
 
 }
+
+const texteApresClub =
+  texteComplet.substring(
+    indexClub
+  );
+
+const indexOfficiel =
+  texteApresClub.indexOf(
+    "Officiel Resp. A"
+  );
+
+if (indexOfficiel === -1) {
+
+  console.error(
+    "Fin du bloc introuvable"
+  );
+
+  return [];
+
+}
+
+const blocClub =
+  texteApresClub.substring(
+    0,
+    indexOfficiel
+  );
 
 const debutClub =
   blocClub.indexOf(
