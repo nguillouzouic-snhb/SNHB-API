@@ -4,12 +4,24 @@ import axios from "axios";
 import cors from "cors";
 import * as pdfParse from "pdf-parse";
 
+const cache = new Map();
 const app = express();
 
 app.use(cors());
 
 app.get("/planning/:equipe", async (req, res) => {
 
+  const cacheKey =
+    `planning_${req.params.equipe}`;
+
+  const cached =
+    getCache(cacheKey);
+
+  if (cached) {
+
+    return res.json(cached);
+
+  }
 
   try {
 
@@ -40,29 +52,23 @@ app.get("/planning/:equipe", async (req, res) => {
 
     let toutesLesRencontres = [];
 
-for (const j of journees) {
+    for (const j of journees) {
 
-  const url =
-    `${baseUrl}/journee-${j.numero}/`;
-  
-  try {
+      const url =
+        `${baseUrl}/journee-${j.numero}/`;
 
-    const page =
-      await axios.get(url);
+      try {
 
+        const page =
+          await axios.get(url);
 
         const htmlJournee =
-  decodeHtml(page.data);
+          decodeHtml(page.data);
 
-if (j.numero === 1) {
-
-
-}
-
-const rencontres =
-  extractRencontres(
-    htmlJournee
-  );
+        const rencontres =
+          extractRencontres(
+            htmlJournee
+          );
 
         toutesLesRencontres.push(
           ...rencontres
@@ -82,20 +88,32 @@ const rencontres =
     const map = new Map();
 
     toutesLesRencontres.forEach(r => {
+
       map.set(
         r.fdmCode,
         r
       );
+
     });
 
     const rencontresUniques =
       [...map.values()];
 
-    res.json({
+    const resultat = {
       journees,
       rencontres:
         rencontresUniques
-    });
+    };
+
+    setCache(
+      cacheKey,
+      resultat,
+      60
+    );
+
+    res.json(
+      resultat
+    );
 
   } catch (error) {
 
@@ -111,6 +129,17 @@ const rencontres =
     
 app.get("/classement/:equipe", async (req, res) => {
 
+  const cacheKey =
+    `classement_${req.params.equipe}`;
+
+  const cached =
+    getCache(cacheKey);
+
+  if (cached) {
+
+    return res.json(cached);
+
+  }
 
   try {
 
@@ -136,8 +165,17 @@ app.get("/classement/:equipe", async (req, res) => {
     const html =
       decodeHtml(response.data);
 
+    const classement =
+      extractClassement(html);
+
+    setCache(
+      cacheKey,
+      classement,
+      60
+    );
+
     res.json(
-      extractClassement(html)
+      classement
     );
 
   } catch (error) {
@@ -150,9 +188,22 @@ app.get("/classement/:equipe", async (req, res) => {
 
 });
 
-app.get(
-  "/test-pdf/:equipe/:fdmCode",
+app.get(  "/test-pdf/:equipe/:fdmCode",
   async (req, res) => {
+
+    const cacheKey =
+      `testpdf_${req.params.fdmCode}`;
+
+    const cached =
+      getCache(cacheKey);
+
+    if (cached) {
+
+      return res.json({
+        joueuses: cached
+      });
+
+    }
 
     try {
 
@@ -175,6 +226,12 @@ app.get(
           collectif.club
         );
 
+      setCache(
+        cacheKey,
+        joueuses,
+        1440
+      );
+
       res.json({
         joueuses
       });
@@ -194,6 +251,18 @@ app.get(
 
 app.get(  "/joueuses/:equipe",
   async (req, res) => {
+
+    const cacheKey =
+      `joueuses_${req.params.equipe}`;
+
+    const cached =
+      getCache(cacheKey);
+
+    if (cached) {
+
+      return res.json(cached);
+
+    }
 
     try {
 
@@ -257,83 +326,91 @@ app.get(  "/joueuses/:equipe",
             r.scoreExterieur !== null
         );
 
-const joueusesMap =
-  new Map();
+      const joueusesMap =
+        new Map();
 
-for (const match of matchsJoues) {
+      for (const match of matchsJoues) {
 
-  try {
+        try {
 
-const statsMatch =
-  await getStatsMatch(
-    match.fdmCode,
-    collectif.club
-  );
+          const statsMatch =
+            await getStatsMatch(
+              match.fdmCode,
+              collectif.club
+            );
 
-    for (const j of statsMatch) {
+          for (const j of statsMatch) {
 
-const cle =
-  j.nom
-    .trim()
-    .toUpperCase();
+            const cle =
+              j.nom
+                .trim()
+                .toUpperCase();
 
-if (
-  !joueusesMap.has(cle)
-) {
+            if (
+              !joueusesMap.has(cle)
+            ) {
 
-  joueusesMap.set(
-    cle,
-    {
-      nom: j.nom,
-      matchs: 0,
-      buts: 0,
-      septMetres: 0
-    }
-  );
+              joueusesMap.set(
+                cle,
+                {
+                  nom: j.nom,
+                  matchs: 0,
+                  buts: 0,
+                  septMetres: 0
+                }
+              );
 
-}
+            }
 
-const joueuse =
-  joueusesMap.get(cle);
+            const joueuse =
+              joueusesMap.get(cle);
 
-      joueuse.matchs +=
-        j.matchs;
+            joueuse.matchs +=
+              j.matchs;
 
-      joueuse.buts +=
-        j.buts;
+            joueuse.buts +=
+              j.buts;
 
-      joueuse.septMetres +=
-        j.septMetres;
+            joueuse.septMetres +=
+              j.septMetres;
 
-    }
+          }
 
-  } catch (err) {
+        } catch (err) {
 
-    console.error(
-      "Erreur FDM",
-      match.fdmCode,
-      err.message
-    );
+          console.error(
+            "Erreur FDM",
+            match.fdmCode,
+            err.message
+          );
 
-  }
+        }
 
-}
-
-res.json(
-  [...joueusesMap.values()]
-    .sort((a, b) => {
-
-      if (b.buts !== a.buts) {
-        return b.buts - a.buts;
       }
 
-      return a.nom.localeCompare(
-        b.nom
+      const resultat =
+        [...joueusesMap.values()]
+          .sort((a, b) => {
+
+            if (b.buts !== a.buts) {
+              return b.buts - a.buts;
+            }
+
+            return a.nom.localeCompare(
+              b.nom
+            );
+
+          });
+
+      setCache(
+        cacheKey,
+        resultat,
+        60
       );
 
-    })
-);
-
+      res.json(
+        resultat
+      );
 
     } catch (err) {
 
@@ -351,6 +428,7 @@ function buildBaseUrl(collectif) {
   return `https://www.ffhandball.fr/competitions/saison-2026-2027-22/departemental/${collectif.competition}/poule-${collectif.poule}`;
 
 }
+
 function extractClassement(html) {
   try {
 
@@ -381,6 +459,7 @@ function extractClassement(html) {
     return [];
   }
 }
+
 function decodeHtml(html) {
 
   return html
@@ -497,6 +576,18 @@ async function getStatsMatch(
   fdmCode,
   clubRecherche
 ) {
+
+  const cacheKey =
+    `fdm_${fdmCode}`;
+
+  const cached =
+    getCache(cacheKey);
+
+  if (cached) {
+
+    return cached;
+
+  }
 
   const url =
     `https://fdm.fdme.ffhandball.fr/${fdmCode[0]}/${fdmCode[1]}/${fdmCode[2]}/${fdmCode[3]}/${fdmCode}.pdf`;
@@ -696,7 +787,56 @@ joueuses.push({
 });
 
 }
+
+setCache(
+  cacheKey,
+  joueuses,
+  1440
+);
   return joueuses;
+
+}
+
+function getCache(key) {
+
+  const item =
+    cache.get(key);
+
+  if (!item) {
+    return null;
+  }
+
+  if (
+    Date.now() >
+    item.expiration
+  ) {
+
+    cache.delete(key);
+
+    return null;
+  }
+
+  return item.data;
+
+}
+
+function setCache(
+  key,
+  data,
+  minutes = 30
+) {
+
+  cache.set(
+    key,
+    {
+      data,
+      expiration:
+        Date.now() +
+        minutes *
+          60 *
+          1000
+    }
+  );
 
 }
 
