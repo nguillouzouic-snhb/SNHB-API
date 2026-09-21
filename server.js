@@ -911,15 +911,6 @@ setInterval(
   60 * 60 * 1000
 );
 
-const PORT =
-  process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(
-    `API SNHB démarrée sur le port ${PORT}`
-  );
-});
-
 const COLLECTIFS = {
 
   U13F2: {
