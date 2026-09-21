@@ -522,43 +522,13 @@ const texte =
 const texteComplet =
   texte.text;
 
-console.log(
-  "CLUB RECHERCHE =",
-  clubRecherche
-);
-
-console.log(
-  "CONTIENT CLUB ?",
-  texteComplet.includes(
-    clubRecherche
-  )
-);
-
-
 const indexClub =
   texteComplet.indexOf(
     "\n" + clubRecherche + "\n"
   );
 
-console.log(
-  "INDEX CLUB",
-  indexClub
-);
-
-console.log(
-  texteComplet.substring(
-    indexClub - 200,
-    indexClub + 400
-  )
-);
-
 
 if (indexClub === -1) {
-
-  console.error(
-    "Club introuvable",
-    clubRecherche
-  );
 
   return [];
 
@@ -627,6 +597,18 @@ const lignes =
       tirs
     ] = match;
 
+console.log({
+  ligne,
+  buts,
+  septMetres,
+  tirs
+});
+
+const morceaux =
+  ligne.trim().split(/\s+/);
+
+console.log(morceaux);
+
     let nbButs = 0;
     let nb7m = 0;
     let nbTirs = 0;
@@ -650,11 +632,7 @@ const lignes =
       nbButs = Number(buts);
       nbTirs = Number(septMetres);
 
-    }
-console.log(
-  "LIGNE MATCH",
-  ligne
-);
+    };
 
     joueuses.push({
 
@@ -671,20 +649,7 @@ console.log(
 
     });
 
-  }
-
-console.log(
-  "JOUEUSES MATCH",
-  fdmCode
-);
-
-console.log(
-  JSON.stringify(
-    joueuses,
-    null,
-    2
-  )
-);
+  };
 
   return joueuses;
 
