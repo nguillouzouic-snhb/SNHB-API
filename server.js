@@ -572,78 +572,87 @@ const lignes =
 
   const joueuses = [];
 
-  for (const ligne of lignes) {
-const ligneNettoyee =
-  ligne.replace(
-    /\s+[A-Z]$/,
-    ""
-  );
-const match =
-  ligneNettoyee.match(
-    /^(?:X\s+)?(\d+)\s+([A-Z\- ]+)\s+([A-Za-z\- ]+)\s+(\d{13})\s+[A-Z]+(?:\s+(\d+))?(?:\s+(\d+))?(?:\s+(\d+))?$/
-  );
-if (!match) {
+for (const ligne of lignes) {
 
-  console.log(
-    "NON RECONNUE :",
-    ligne
-  );
+  const licenceMatch =
+    ligne.match(/\d{13}/);
 
-  continue;
+  if (!licenceMatch) {
+    continue;
+  }
+
+  const licence =
+    licenceMatch[0];
+
+  const avantLicence =
+    ligne.substring(
+      0,
+      ligne.indexOf(licence)
+    );
+
+  const apresLicence =
+    ligne.substring(
+      ligne.indexOf(licence) +
+      licence.length
+    );
+
+  const morceaux =
+    avantLicence
+      .replace(/^X\s+/, "")
+      .trim()
+      .split(/\s+/);
+
+  if (morceaux.length < 3) {
+    continue;
+  }
+
+  const numero =
+    morceaux[0];
+
+  const nom =
+    morceaux[1];
+
+  const prenom =
+    morceaux.slice(2).join(" ");
+
+  let nbButs = 0;
+  let nb7m = 0;
+
+  const chiffres =
+    apresLicence.match(/\d+/g) || [];
+
+  if (chiffres.length >= 3) {
+
+    nbButs =
+      Number(chiffres[0]);
+
+    nb7m =
+      Number(chiffres[1]);
+
+  }
+  else if (
+    chiffres.length >= 2
+  ) {
+
+    nbButs =
+      Number(chiffres[0]);
+
+  }
+
+  joueuses.push({
+
+    nom:
+      `${nom.trim()} ${prenom.trim()}`,
+
+    matchs: 1,
+
+    buts: nbButs,
+
+    septMetres: nb7m
+
+  });
 
 }
-    if (!match) {
-      continue;
-    }
-
-    const [
-      ,
-      numero,
-      nom,
-      prenom,
-      licence,
-      buts,
-      septMetres,
-      tirs
-    ] = match;
-
-    let nbButs = 0;
-    let nb7m = 0;
-    let nbTirs = 0;
-
-if (
-  buts &&
-  septMetres &&
-  tirs
-) {
-
-  nbButs = Number(buts);
-  nb7m = Number(septMetres);
-
-}
-else if (
-  buts &&
-  septMetres
-) {
-
-  nbButs = Number(buts);
-
-}
-
-    joueuses.push({
-
-      nom:
-        `${nom.trim()} ${prenom.trim()}`,
-
-      matchs: 1,
-
-      buts: nbButs,
-
-      septMetres: nb7m,
-
-    });
-
-  };
 console.log(
   "NB JOUEUSES",
   fdmCode,
