@@ -272,28 +272,29 @@ const statsMatch =
 
     for (const j of statsMatch) {
 
-      if (
-        !joueusesMap.has(
-          j.nom
-        )
-      ) {
+const cle =
+  j.nom
+    .trim()
+    .toUpperCase();
 
-        joueusesMap.set(
-          j.nom,
-{
-  nom: j.nom,
-  matchs: 0,
-  buts: 0,
-  septMetres: 0
+if (
+  !joueusesMap.has(cle)
+) {
+
+  joueusesMap.set(
+    cle,
+    {
+      nom: j.nom,
+      matchs: 0,
+      buts: 0,
+      septMetres: 0
+    }
+  );
+
 }
-        );
 
-      }
-
-      const joueuse =
-        joueusesMap.get(
-          j.nom
-        );
+const joueuse =
+  joueusesMap.get(cle);
 
       joueuse.matchs +=
         j.matchs;
@@ -593,42 +594,28 @@ const lignes =
       tirs
     ] = match;
 
-console.log({
-  ligne,
-  buts,
-  septMetres,
-  tirs
-});
-
-const morceaux =
-  ligne.trim().split(/\s+/);
-
-console.log(morceaux);
-
     let nbButs = 0;
     let nb7m = 0;
     let nbTirs = 0;
 
-    if (
-      buts &&
-      septMetres &&
-      tirs
-    ) {
+if (
+  buts &&
+  septMetres &&
+  tirs
+) {
 
-      nbButs = Number(buts);
-      nb7m = Number(septMetres);
-      nbTirs = Number(tirs);
+  nbButs = Number(buts);
+  nb7m = Number(septMetres);
 
-    }
-    else if (
-      buts &&
-      septMetres
-    ) {
+}
+else if (
+  buts &&
+  septMetres
+) {
 
-      nbButs = Number(buts);
-      nbTirs = Number(septMetres);
+  nbButs = Number(buts);
 
-    };
+}
 
     joueuses.push({
 
