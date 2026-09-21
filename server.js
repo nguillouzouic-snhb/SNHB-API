@@ -833,15 +833,18 @@ function setCache(
   minutes = 60
 ) {
 
+  console.log(
+    "CACHE SET",
+    key
+  );
+
   cache.set(
     key,
     {
       data,
       expiration:
         Date.now() +
-        minutes *
-          60 *
-          1000
+        minutes * 60 * 1000
     }
   );
 
