@@ -164,85 +164,22 @@ app.get(  "/joueuses/:equipe",
 
     try {
 
-      const collectif =
-        COLLECTIFS[
+      const resultat =
+        await chargerJoueuses(
           req.params.equipe
-        ];
-
-      const baseUrl =
-        buildBaseUrl(collectif);
-
-      const response =
-        await axios.get(
-          `${baseUrl}/`
         );
 
-      const html =
-        decodeHtml(
-          response.data
-        );
+      setCache(
+        cacheKey,
+        resultat,
+        60
+      );
 
-      const journees =
-        extractJournees(
-          html
-        );
+      res.json(
+        resultat
+      );
 
-      let rencontres = [];
-
-      for (const j of journees) {
-
-        const page =
-          await axios.get(
-            `${baseUrl}/journee-${j.numero}/`
-          );
-
-        const htmlJournee =
-          decodeHtml(
-            page.data
-          );
-
-        rencontres.push(
-          ...extractRencontres(
-            htmlJournee
-          )
-        );
-
-      }
-
-      const matchsEquipe =
-        rencontres.filter(
-          r =>
-            r.domicile === collectif.club ||
-            r.exterieur === collectif.club
-        );
-
-      const matchsJoues =
-        matchsEquipe.filter(
-          r =>
-            r.fdmCode &&
-            r.scoreDomicile !== null &&
-            r.scoreExterieur !== null
-        );
-
-      const joueusesMap =
-        new Map();
-
-      for (const match of matchsJoues) {
-
-        try {const resultat =
-  await chargerJoueuses(
-    req.params.equipe
-  );
-
-setCache(
-  cacheKey,
-  resultat,
-  60
-);
-
-res.json(
-  resultat
-);} catch (err) {
+    } catch (err) {
 
       res.status(500).json({
         erreur: err.message
@@ -493,7 +430,6 @@ for (const ligne of lignesDeroulement) {
   }
 
 }
-``
   
 const indexClub =
   texteComplet.indexOf(
