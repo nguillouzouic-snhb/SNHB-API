@@ -578,7 +578,16 @@ const lignes =
       ligne.match(
         /^(?:X\s+)?(\d+)\s+([A-Z\- ]+)\s+([A-Za-z\- ]+)\s+(\d{13})\s+[A-Z]+(?:\s+(\d+))?(?:\s+(\d+))?(?:\s+(\d+))?$/
       );
+if (!match) {
 
+  console.log(
+    "NON RECONNUE :",
+    ligne
+  );
+
+  continue;
+
+}
     if (!match) {
       continue;
     }
@@ -631,7 +640,11 @@ else if (
     });
 
   };
-
+console.log(
+  "NB JOUEUSES",
+  fdmCode,
+  joueuses.length
+);
   return joueuses;
 
 }
