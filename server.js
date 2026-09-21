@@ -24,98 +24,20 @@ app.get("/planning/:equipe", async (req, res) => {
   }
 
   try {
+	  const resultat =
+  await chargerPlanning(
+    req.params.equipe
+  );
 
-    const collectif =
-      COLLECTIFS[req.params.equipe];
+setCache(
+  cacheKey,
+  resultat,
+  60
+);
 
-    if (!collectif) {
-
-      return res.status(404).json({
-        erreur: "Collectif inconnu"
-      });
-
-    }
-
-    const baseUrl =
-      buildBaseUrl(collectif);
-
-    const response =
-      await axios.get(
-        `${baseUrl}/`
-      );
-
-    const html =
-      decodeHtml(response.data);
-
-    const journees =
-      extractJournees(html);
-
-    let toutesLesRencontres = [];
-
-    for (const j of journees) {
-
-      const url =
-        `${baseUrl}/journee-${j.numero}/`;
-
-      try {
-
-        const page =
-          await axios.get(url);
-
-        const htmlJournee =
-          decodeHtml(page.data);
-
-        const rencontres =
-          extractRencontres(
-            htmlJournee
-          );
-
-        toutesLesRencontres.push(
-          ...rencontres
-        );
-
-      } catch (err) {
-
-        console.error(
-          `Erreur J${j.numero}`,
-          err.message
-        );
-
-      }
-
-    }
-
-    const map = new Map();
-
-    toutesLesRencontres.forEach(r => {
-
-      map.set(
-        r.fdmCode,
-        r
-      );
-
-    });
-
-    const rencontresUniques =
-      [...map.values()];
-
-    const resultat = {
-      journees,
-      rencontres:
-        rencontresUniques
-    };
-
-    setCache(
-      cacheKey,
-      resultat,
-      60
-    );
-
-    res.json(
-      resultat
-    );
-
-  } catch (error) {
+res.json(
+  resultat
+);} catch (error) {
 
     console.error(error);
 
@@ -141,44 +63,20 @@ app.get("/classement/:equipe", async (req, res) => {
 
   }
 
-  try {
+  try {const classement =
+  await chargerClassement(
+    req.params.equipe
+  );
 
-    const collectif =
-      COLLECTIFS[req.params.equipe];
+setCache(
+  cacheKey,
+  classement,
+  60
+);
 
-    if (!collectif) {
-
-      return res.status(404).json({
-        erreur: "Collectif inconnu"
-      });
-
-    }
-
-    const BASE_URL =
-      buildBaseUrl(collectif);
-
-    const response =
-      await axios.get(
-        `${BASE_URL}/classements/`
-      );
-
-    const html =
-      decodeHtml(response.data);
-
-    const classement =
-      extractClassement(html);
-
-    setCache(
-      cacheKey,
-      classement,
-      60
-    );
-
-    res.json(
-      classement
-    );
-
-  } catch (error) {
+res.json(
+  classement
+);} catch (error) {
 
     res.status(500).json({
       erreur: error.message
@@ -331,88 +229,20 @@ app.get(  "/joueuses/:equipe",
 
       for (const match of matchsJoues) {
 
-        try {
+        try {const resultat =
+  await chargerJoueuses(
+    req.params.equipe
+  );
 
-          const statsMatch =
-            await getStatsMatch(
-              match.fdmCode,
-              collectif.club
-            );
+setCache(
+  cacheKey,
+  resultat,
+  60
+);
 
-          for (const j of statsMatch) {
-
-            const cle =
-              j.nom
-                .trim()
-                .toUpperCase();
-
-            if (
-              !joueusesMap.has(cle)
-            ) {
-
-              joueusesMap.set(
-                cle,
-                {
-                  nom: j.nom,
-                  matchs: 0,
-                  buts: 0,
-                  septMetres: 0
-                }
-              );
-
-            }
-
-            const joueuse =
-              joueusesMap.get(cle);
-
-            joueuse.matchs +=
-              j.matchs;
-
-            joueuse.buts +=
-              j.buts;
-
-            joueuse.septMetres +=
-              j.septMetres;
-
-          }
-
-        } catch (err) {
-
-          console.error(
-            "Erreur FDM",
-            match.fdmCode,
-            err.message
-          );
-
-        }
-
-      }
-
-      const resultat =
-        [...joueusesMap.values()]
-          .sort((a, b) => {
-
-            if (b.buts !== a.buts) {
-              return b.buts - a.buts;
-            }
-
-            return a.nom.localeCompare(
-              b.nom
-            );
-
-          });
-
-      setCache(
-        cacheKey,
-        resultat,
-        60
-      );
-
-      res.json(
-        resultat
-      );
-
-    } catch (err) {
+res.json(
+  resultat
+);} catch (err) {
 
       res.status(500).json({
         erreur: err.message
@@ -796,6 +626,231 @@ setCache(
   return joueuses;
 
 }
+
+async function chargerPlanning(equipe) {
+
+  const collectif =
+    COLLECTIFS[equipe];
+
+  if (!collectif) {
+
+    throw new Error(
+      "Collectif inconnu"
+    );
+
+  }
+
+  const baseUrl =
+    buildBaseUrl(collectif);
+
+  const response =
+    await axios.get(
+      `${baseUrl}/`
+    );
+
+  const html =
+    decodeHtml(response.data);
+
+  const journees =
+    extractJournees(html);
+
+  let toutesLesRencontres = [];
+
+  for (const j of journees) {
+
+    try {
+
+      const page =
+        await axios.get(
+          `${baseUrl}/journee-${j.numero}/`
+        );
+
+      const htmlJournee =
+        decodeHtml(page.data);
+
+      toutesLesRencontres.push(
+        ...extractRencontres(
+          htmlJournee
+        )
+      );
+
+    } catch (err) {
+
+      console.error(
+        `Erreur J${j.numero}`,
+        err.message
+      );
+
+    }
+
+  }
+
+  const map =
+    new Map();
+
+  toutesLesRencontres.forEach(r => {
+
+    map.set(
+      r.fdmCode,
+      r
+    );
+
+  });
+
+  return {
+
+    journees,
+
+    rencontres:
+      [...map.values()]
+
+  };
+
+}
+
+async function chargerClassement(
+  equipe
+) {
+
+  const collectif =
+    COLLECTIFS[equipe];
+
+  if (!collectif) {
+
+    throw new Error(
+      "Collectif inconnu"
+    );
+
+  }
+
+  const baseUrl =
+    buildBaseUrl(
+      collectif
+    );
+
+  const response =
+    await axios.get(
+      `${baseUrl}/classements/`
+    );
+
+  const html =
+    decodeHtml(
+      response.data
+    );
+
+  return extractClassement(
+    html
+  );
+
+}
+
+async function chargerJoueuses(
+  equipe
+) {
+
+  const collectif =
+    COLLECTIFS[equipe];
+
+  if (!collectif) {
+
+    throw new Error(
+      "Collectif inconnu"
+    );
+
+  }
+
+  const planning =
+    await chargerPlanning(
+      equipe
+    );
+
+  const matchsEquipe =
+    planning.rencontres.filter(
+      r =>
+        r.domicile === collectif.club ||
+        r.exterieur === collectif.club
+    );
+
+  const matchsJoues =
+    matchsEquipe.filter(
+      r =>
+        r.fdmCode &&
+        r.scoreDomicile !== null &&
+        r.scoreExterieur !== null
+    );
+
+  const joueusesMap =
+    new Map();
+
+  for (const match of matchsJoues) {
+
+    const statsMatch =
+      await getStatsMatch(
+        match.fdmCode,
+        collectif.club
+      );
+
+    for (const j of statsMatch) {
+
+      const cle =
+        j.nom
+          .trim()
+          .toUpperCase();
+
+      if (
+        !joueusesMap.has(cle)
+      ) {
+
+        joueusesMap.set(
+          cle,
+          {
+            nom: j.nom,
+            matchs: 0,
+            buts: 0,
+            septMetres: 0
+          }
+        );
+
+      }
+
+      const joueuse =
+        joueusesMap.get(cle);
+
+      joueuse.matchs +=
+        j.matchs;
+
+      joueuse.buts +=
+        j.buts;
+
+      joueuse.septMetres +=
+        j.septMetres;
+
+    }
+
+  }
+
+  return [
+    ...joueusesMap.values()
+  ].sort((a, b) => {
+
+    if (
+      b.buts !== a.buts
+    ) {
+
+      return (
+        b.buts - a.buts
+      );
+
+    }
+
+    return a.nom.localeCompare(
+      b.nom
+    );
+
+  });
+
+}
+
 
 function getCache(key) {
 
