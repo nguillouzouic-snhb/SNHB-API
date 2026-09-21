@@ -842,7 +842,9 @@ function setCache(
 
 async function warmupCache() {
 
-  console.log("Préchargement du cache...");
+  console.log(
+    "Préchargement du cache..."
+  );
 
   const equipes = [
     "U13F1",
@@ -854,9 +856,17 @@ async function warmupCache() {
 
     try {
 
-      await chargerPlanning(equipe);
-      await chargerClassement(equipe);
-      await chargerJoueuses(equipe);
+      await chargerPlanning(
+        equipe
+      );
+
+      await chargerClassement(
+        equipe
+      );
+
+      await chargerJoueuses(
+        equipe
+      );
 
       console.log(
         `Cache OK ${equipe}`
@@ -875,13 +885,16 @@ async function warmupCache() {
 
 }
 
+const PORT =
+  process.env.PORT || 3000;
+
 app.listen(PORT, async () => {
 
   console.log(
     `API SNHB démarrée sur le port ${PORT}`
   );
 
-  warmupCache();
+  await warmupCache();
 
 });
 
@@ -897,7 +910,6 @@ setInterval(
   },
   60 * 60 * 1000
 );
-``
 
 const PORT =
   process.env.PORT || 3000;
