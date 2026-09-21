@@ -794,6 +794,12 @@ function getCache(key) {
     cache.get(key);
 
   if (!item) {
+
+    console.log(
+      "CACHE MISS",
+      key
+    );
+
     return null;
   }
 
@@ -802,10 +808,20 @@ function getCache(key) {
     item.expiration
   ) {
 
+    console.log(
+      "CACHE EXPIRE",
+      key
+    );
+
     cache.delete(key);
 
     return null;
   }
+
+  console.log(
+    "CACHE HIT",
+    key
+  );
 
   return item.data;
 
