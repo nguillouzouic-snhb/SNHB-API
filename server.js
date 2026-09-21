@@ -280,13 +280,12 @@ const statsMatch =
 
         joueusesMap.set(
           j.nom,
-          {
-            nom: j.nom,
-            matchs: 0,
-            buts: 0,
-            tirs: 0,
-            septMetres: 0
-          }
+{
+  nom: j.nom,
+  matchs: 0,
+  buts: 0,
+  septMetres: 0
+}
         );
 
       }
@@ -301,9 +300,6 @@ const statsMatch =
 
       joueuse.buts +=
         j.buts;
-
-      joueuse.tirs +=
-        j.tirs;
 
       joueuse.septMetres +=
         j.septMetres;
@@ -644,8 +640,6 @@ console.log(morceaux);
       buts: nbButs,
 
       septMetres: nb7m,
-
-      tirs: nbTirs
 
     });
 
