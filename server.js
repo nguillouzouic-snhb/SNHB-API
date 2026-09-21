@@ -151,14 +151,28 @@ app.get("/classement/:equipe", async (req, res) => {
 });
 
 app.get(
-  "/test-pdf/:fdmCode",
+  "/test-pdf/:equipe/:fdmCode",
   async (req, res) => {
 
     try {
 
+      const collectif =
+        COLLECTIFS[
+          req.params.equipe
+        ];
+
+      if (!collectif) {
+
+        return res.status(404).json({
+          erreur: "Collectif inconnu"
+        });
+
+      }
+
       const joueuses =
         await getStatsMatch(
-          req.params.fdmCode
+          req.params.fdmCode,
+          collectif.club
         );
 
       res.json({
@@ -178,8 +192,7 @@ app.get(
   }
 );
 
-app.get(
-  "/joueuses/:equipe",
+app.get(  "/joueuses/:equipe",
   async (req, res) => {
 
     try {
@@ -251,10 +264,11 @@ for (const match of matchsJoues) {
 
   try {
 
-    const statsMatch =
-      await getStatsMatch(
-        match.fdmCode
-      );
+const statsMatch =
+  await getStatsMatch(
+    match.fdmCode,
+    collectif.club
+  );
 
     for (const j of statsMatch) {
 
@@ -482,7 +496,10 @@ function extractRencontres(html) {
   }
 }
 
-async function getStatsMatch(fdmCode) {
+async function getStatsMatch(
+  fdmCode,
+  clubRecherche
+) {
 
   const url =
     `https://fdm.fdme.ffhandball.fr/${fdmCode[0]}/${fdmCode[1]}/${fdmCode[2]}/${fdmCode[3]}/${fdmCode}.pdf`;
@@ -492,20 +509,67 @@ async function getStatsMatch(fdmCode) {
       responseType: "arraybuffer"
     });
 
-  const parser =
-    new pdfParse.PDFParse({
-      data: response.data
-    });
+const parser =
+  new pdfParse.PDFParse({
+    data: response.data
+  });
 
-  await parser.load();
+await parser.load();
 
-  const texte =
-    await parser.getText();
+const texte =
+  await parser.getText();
 
-  const blocClub =
-    texte.text.split(
-      "Club\n visiteur"
-    )[0];
+const texteComplet =
+  texte.text;
+
+const blocs =
+  texteComplet.split(
+    "Club\n visiteur"
+  );
+
+const blocRecevant =
+  blocs[0];
+
+const blocVisiteur =
+  blocs.length > 1
+    ? blocs[1].split(
+        "Détail score"
+      )[0]
+    : "";
+
+let blocClub = "";
+
+if (
+  blocRecevant.includes(
+    clubRecherche
+  )
+) {
+
+  blocClub =
+    blocRecevant;
+
+}
+else if (
+  blocVisiteur.includes(
+    clubRecherche
+  )
+) {
+
+  blocClub =
+    blocVisiteur;
+
+}
+else {
+
+  console.error(
+    "Club introuvable dans la feuille",
+    clubRecherche,
+    fdmCode
+  );
+
+  return [];
+
+}
 
   const lignes =
     blocClub.split("\n");
