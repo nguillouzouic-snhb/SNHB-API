@@ -662,25 +662,85 @@ for (const ligne of lignes) {
 
   }
 
-  joueuses.push({
+const nomComplet =
+  `${nom.trim()} ${prenom.trim()}`;
 
-    nom:
-      `${nom.trim()} ${prenom.trim()}`,
+const stats =
+  statsButs.get(
+    nomComplet
+  ) || {
+    buts: 0,
+    septMetres: 0
+  };
 
-    matchs: 1,
+joueuses.push({
 
-    buts: nbButs,
+  nom: nomComplet,
 
-    septMetres: nb7m
+  matchs: 1,
 
-  });
+  buts:
+    stats.buts,
+
+  septMetres:
+    stats.septMetres
+
+});
 
 }
-console.log(
-  "NB JOUEUSES",
-  fdmCode,
-  joueuses.length
-);
+const statsButs =
+  new Map();
+
+const lignesDeroulement =
+  texteComplet.split("\n");
+
+for (const ligne of lignesDeroulement) {
+
+  const matchBut =
+    ligne.match(
+      /But(?:\s+7m)?\s+([A-Z\-]+)\s+(.+)$/
+    );
+
+  if (!matchBut) {
+    continue;
+  }
+
+  const nomJoueuse =
+    `${matchBut[1]} ${matchBut[2]}`
+      .trim();
+
+  if (!statsButs.has(
+    nomJoueuse
+  )) {
+
+    statsButs.set(
+      nomJoueuse,
+      {
+        buts: 0,
+        septMetres: 0
+      }
+    );
+
+  }
+
+  const stats =
+    statsButs.get(
+      nomJoueuse
+    );
+
+  stats.buts++;
+
+  if (
+    ligne.includes(
+      "But 7m"
+    )
+  ) {
+
+    stats.septMetres++;
+
+  }
+
+}
   return joueuses;
 
 }
