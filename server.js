@@ -518,7 +518,30 @@ const texte =
 
 const texteComplet =
   texte.text;
+  
+const lignesDeroulement =
+  texteComplet.split("\n");
+  
+const statsButs =
+  new Map();  
+  
+  for (
+  const ligne of lignesDeroulement
+) {
 
+  if (
+    ligne.includes("But")
+  ) {
+
+    console.log(
+      "BUT >>>",
+      ligne
+    );
+
+  }
+
+}
+  
 const indexClub =
   texteComplet.indexOf(
     "\n" + clubRecherche + "\n"
