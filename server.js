@@ -823,7 +823,7 @@ function getCache(key) {
 function setCache(
   key,
   data,
-  minutes = 30
+  minutes = 60
 ) {
 
   cache.set(
