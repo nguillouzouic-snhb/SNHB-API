@@ -537,8 +537,21 @@ console.log(
 
 const indexClub =
   texteComplet.indexOf(
-    clubRecherche
+    "\n" + clubRecherche + "\n"
   );
+
+console.log(
+  "INDEX CLUB",
+  indexClub
+);
+
+console.log(
+  texteComplet.substring(
+    indexClub - 200,
+    indexClub + 400
+  )
+);
+
 
 if (indexClub === -1) {
 
@@ -659,17 +672,7 @@ console.log(
     });
 
   }
-  console.log(
-  blocRecevant.substring(0,300)
-);
 
-console.log(
-  "----------------"
-);
-
-console.log(
-  blocVisiteur.substring(0,300)
-);
 console.log(
   "JOUEUSES MATCH",
   fdmCode
