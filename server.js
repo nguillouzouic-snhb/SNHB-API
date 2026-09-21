@@ -522,6 +522,19 @@ const texte =
 const texteComplet =
   texte.text;
 
+console.log(
+  "CLUB RECHERCHE =",
+  clubRecherche
+);
+
+console.log(
+  "CONTIENT CLUB ?",
+  texteComplet.includes(
+    clubRecherche
+  )
+);
+
+
 const blocs =
   texteComplet.split(
     "Club\n visiteur"
@@ -639,7 +652,27 @@ else {
     });
 
   }
+  console.log(
+  blocRecevant.substring(0,300)
+);
 
+console.log(
+  "----------------"
+);
+
+console.log(
+  blocVisiteur.substring(0,300)
+);
+console.log(
+  "NB JOUEUSES =",
+  joueuses.length
+);
+
+console.log(
+  "PREMIERE =",
+  joueuses[0]
+);
+``
   return joueuses;
 
 }
